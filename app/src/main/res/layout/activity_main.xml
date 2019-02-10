@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.MainActivity"
+    android:theme="@android:style/Theme.Material.Light.NoActionBar">
+
+    <Button
+        android:id="@+id/main_new_order_btn"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/button_lined_bg"
+        android:text="New Order"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/main_storage_in_btn"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="96dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/button_lined_bg"
+        android:text="Storage In"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_new_order_btn" />
+
+    <Button
+        android:id="@+id/main_storage_out_btn"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/button_lined_bg"
+        android:text="Storage Out"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_storage_in_btn" />
+
+    <Button
+        android:id="@+id/main_suppliers_btn"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/button_lined_bg"
+        android:text="Suppliers"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_storage_out_btn" />
+
+    <Button
+        android:id="@+id/main_products_btn"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/button_lined_bg"
+        android:text="Products"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_suppliers_btn" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

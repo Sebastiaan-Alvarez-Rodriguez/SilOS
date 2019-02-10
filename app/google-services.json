@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1008286100400",
+    "firebase_url": "https://silos-c4278.firebaseio.com",
+    "project_id": "silos-c4278",
+    "storage_bucket": "silos-c4278.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1008286100400:android:fc9b08eb441d5008",
+        "android_client_info": {
+          "package_name": "com.sebastiaan.silos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1008286100400-lkrmrm5pa53ujiihpqif8tocckfl06f7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0X0h1yRx-SCg7aAinGdnL9PYdGVsuTl8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

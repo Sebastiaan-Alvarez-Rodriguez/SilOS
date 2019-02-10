@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">SilOS</string>
+    <string name="product_name">Product name</string>
+    <string name="associate_barcode">Associate barcode</string>
+    <string name="suppliers_for_this_product">Suppliers for this product:</string>
+    <string name="product_description">product description</string>
+    <string name="edit">Edit</string>
+    <string name="done">done</string>
+</resources>
