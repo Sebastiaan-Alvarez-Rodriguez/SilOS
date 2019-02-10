@@ -32,14 +32,14 @@ After following these steps, you can start developping.
 The following frameworks were used:
 * transitions framework (animations)
 * Android Room (database)
-* Firebase Machine Learning Kit (scanning barcodes)
-*
+* Firebase Machine Learning Kit (scanning pictures of barcodes)
+* Camerakit framework (take picture)
 
 ## Authors
 
 * **Sebastiaan Alvarez Rodriguez** - [Sebastiaan Alvarez Rodriguez](https://github.com/Sebastiaan-Alvarez-Rodriguez)
 * **Mariska IJpelaar** - no github account yet
-## Acknowledgments
 
-* Thanks to [g-truc](https://github.com/g-truc) for the creation of GLM
-* Thanks to [nigels-com](https://github.com/nigels-com/) for the creation of GLEW
+## Acknowledgments
+* Thanks to [austinkettner](https://github.com/austinkettner) for the creation of the Camerakit framework, as I am truly too lazy to build camera handlers myself
+* Thanks to [JetBrains](https://www.jetbrains.com/) for the creation of Android Studio
