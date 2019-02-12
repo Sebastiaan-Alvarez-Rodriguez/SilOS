@@ -38,7 +38,7 @@ The following frameworks were used:
 ## Authors
 
 * **Sebastiaan Alvarez Rodriguez** - [Sebastiaan Alvarez Rodriguez](https://github.com/Sebastiaan-Alvarez-Rodriguez)
-* **Mariska IJpelaar** - no github account yet
+* **Mariska IJpelaar** - [Mariska IJpelaar](https://github.com/MariskaIJpelaar)
 
 ## Acknowledgments
 * Thanks to [austinkettner](https://github.com/austinkettner) for the creation of the Camerakit framework, as I am truly too lazy to build camera handlers myself
