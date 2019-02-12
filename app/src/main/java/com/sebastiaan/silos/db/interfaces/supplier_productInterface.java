@@ -6,11 +6,9 @@ import com.sebastiaan.silos.db.entities.supplier_product;
 import java.util.List;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Update;
 
 @Dao
 public interface supplier_productInterface extends DbInterface<supplier_product> {
@@ -31,13 +29,4 @@ public interface supplier_productInterface extends DbInterface<supplier_product>
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insert(supplier_product supplier_product);
 
-    @Update
-    void updateAll(supplier_product... supplier_products);
-    @Update
-    void update(supplier_product supplier_product);
-
-    @Delete
-    void deleteAll(supplier_product... supplier_products);
-    @Delete
-    void delete(supplier_product supplier_product);
 }

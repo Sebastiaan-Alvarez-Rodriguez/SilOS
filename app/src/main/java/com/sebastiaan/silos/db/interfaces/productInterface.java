@@ -1,14 +1,11 @@
 package com.sebastiaan.silos.db.interfaces;
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.Query;
-import androidx.room.Update;
-
 import com.sebastiaan.silos.db.entities.product;
 
 import java.util.List;
+
+import androidx.room.Dao;
+import androidx.room.Query;
 
 @Dao
 public interface productInterface extends DbInterface<product> {
@@ -29,19 +26,4 @@ public interface productInterface extends DbInterface<product> {
 
     @Query("SELECT COUNT(*) from product")
     int countProducts();
-
-    @Insert
-    long[] insertAll(product... products);
-    @Insert
-    long insert(product product);
-
-    @Update
-    void updateAll(product... products);
-    @Update
-    void update(product product);
-
-    @Delete
-    void deleteAll(product... products);
-    @Delete
-    void delete(product product);
 }

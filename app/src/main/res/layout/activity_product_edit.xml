@@ -9,7 +9,7 @@
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/product_edit_toolbar"
+        android:id="@+id/barcode_edit_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -29,7 +29,7 @@
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/product_edit_toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/barcode_edit_toolbar" />
 
     <EditText
         android:id="@+id/product_edit_description"
@@ -47,18 +47,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/product_edit_name" />
 
-    <Button
-        android:id="@+id/product_associate_barcode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/associate_barcode"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/product_edit_description" />
-
     <TextView
         android:id="@+id/product_constText1"
         android:layout_width="wrap_content"
@@ -67,7 +55,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/suppliers_for_this_product"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/product_associate_barcode" />
+        app:layout_constraintTop_toBottomOf="@+id/product_edit_description" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/product_edit_supplierslist"

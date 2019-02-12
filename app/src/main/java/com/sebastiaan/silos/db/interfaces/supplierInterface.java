@@ -1,14 +1,13 @@
 package com.sebastiaan.silos.db.interfaces;
 
+import com.sebastiaan.silos.db.entities.supplier;
+
+import java.util.List;
+
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Update;
-
-import com.sebastiaan.silos.db.entities.supplier;
-import java.util.List;
 
 @Dao
 public interface supplierInterface extends DbInterface<supplier> {
@@ -31,14 +30,4 @@ public interface supplierInterface extends DbInterface<supplier> {
     long[] insertAll(supplier... suppliers);
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(supplier supplier);
-
-    @Update
-    void updateAll(supplier... suppliers);
-    @Update
-    void update(supplier supplier);
-
-    @Delete
-    void deleteAll(supplier... suppliers);
-    @Delete
-    void delete(supplier supplier);
 }

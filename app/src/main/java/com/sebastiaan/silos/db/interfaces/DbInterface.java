@@ -1,12 +1,27 @@
 package com.sebastiaan.silos.db.interfaces;
 
-public interface DbInterface<T> {
-    long[] insertAll(T... Ts);
-    long insert(T T);
+import com.sebastiaan.silos.db.entities.DbEntity;
 
-    void updateAll(T... Ts);
-    void update(T T);
+import androidx.room.Dao;
+import androidx.room.Delete;
+import androidx.room.Insert;
+import androidx.room.Update;
 
-    void deleteAll(T... Ts);
-    void delete(T T);
+@Dao
+public interface DbInterface<T extends DbEntity<T>> {
+    @Insert
+    long[] insertAll(T[] ts);
+    @Insert
+    long insert(T t);
+
+    @Update
+    void updateAll(T[] ts);
+    @Update
+    void update(T t);
+
+    @Delete
+    void deleteAll(T[] ts);
+    @Delete
+    void delete(T t);
+
 }
