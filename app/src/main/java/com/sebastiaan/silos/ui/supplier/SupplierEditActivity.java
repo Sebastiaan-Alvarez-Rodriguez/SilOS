@@ -55,6 +55,7 @@ public class SupplierEditActivity extends AppCompatActivity {
 
         if (inputMode == EDIT) {
             edit_supplier = bundle.getParcelable("supplier_parcel");
+            //noinspection ConstantConditions
             setSupplier(edit_supplier);
         } else {
             edit_supplier = null;

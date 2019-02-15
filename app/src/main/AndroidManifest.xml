@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.sebastiaan.silos">
 
+    <uses-permission android:name="android.permission.VIBRATE" />
     <application
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -21,6 +22,8 @@
         <activity android:name=".ui.supplier.SuppliersActivity" />
         <activity android:name=".ui.supplier.SupplierEditActivity" />
         <activity android:name=".ui.barcode.barScanActivity" />
+        <activity android:name=".ui.barcode.BarcodesActivity" />
+        <activity android:name=".ui.barcode.BarcodeEditActivity" />
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"

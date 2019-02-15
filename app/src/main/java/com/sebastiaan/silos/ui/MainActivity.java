@@ -22,17 +22,19 @@ public class MainActivity extends Activity {
         Button storage_in = findViewById(R.id.main_storage_in_btn);//TODO: implement storage holdings and send user there
         Button storage_out = findViewById(R.id.main_storage_out_btn);//TODO: implement storage holdings and send user there
 
-        Button new_supplier = findViewById(R.id.main_suppliers_btn);
-        new_supplier.setOnClickListener(v -> {
+        Button supplierButton = findViewById(R.id.main_suppliers_btn);
+        supplierButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, SuppliersActivity.class);
             startActivity(intent);
         });
 
-        Button new_product = findViewById(R.id.main_products_btn);
-        new_product.setOnClickListener(v -> {
+        Button productButton = findViewById(R.id.main_products_btn);
+        productButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, ProductsActivity.class);
             startActivity(intent);
         });
+
+        Button barcodebutton = findViewById(R.id.main_barcodes_btn);
 
     }
 }

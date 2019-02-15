@@ -105,7 +105,7 @@ public class ProductEditActivity extends AppCompatActivity {
     }
 
     private void setupActionBar() {
-        Toolbar myToolbar = findViewById(R.id.product_edit_toolbar);
+        Toolbar myToolbar = findViewById(R.id.barcode_edit_toolbar);
         setSupportActionBar(myToolbar);
         ActionBar actionbar = getSupportActionBar();
         if (actionbar != null) {
@@ -172,7 +172,7 @@ public class ProductEditActivity extends AppCompatActivity {
         alertBuilder.setMessage(current.productname + " already exists. Overwrite?");
         alertBuilder.setPositiveButton("Yes", (dialog, which) -> overrideProduct(current, conflictID));
         alertBuilder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
-
+        alertBuilder.create().show();
     }
 
     private void insertProduct(ui_product input) {

@@ -1,12 +1,19 @@
 package com.sebastiaan.silos.db;
 
+import android.content.Context;
+
+import com.sebastiaan.silos.db.entities.barcode;
+import com.sebastiaan.silos.db.entities.product;
+import com.sebastiaan.silos.db.entities.supplier;
+import com.sebastiaan.silos.db.entities.supplier_product;
+import com.sebastiaan.silos.db.interfaces.barcodeInterface;
+import com.sebastiaan.silos.db.interfaces.productInterface;
+import com.sebastiaan.silos.db.interfaces.supplierInterface;
+import com.sebastiaan.silos.db.interfaces.supplier_productInterface;
+
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import android.content.Context;
-
-import com.sebastiaan.silos.db.entities.*;
-import com.sebastiaan.silos.db.interfaces.*;
 
 
 // Handigheden:
@@ -22,6 +29,10 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract supplierInterface supplierDao();
     public abstract supplier_productInterface supplier_productDao();
     public abstract barcodeInterface barcodeDao();
+
+//    public <T extends DbEntity<T>> DbInterface<T> getInterface() {
+//
+//    }
 
     public static AppDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
