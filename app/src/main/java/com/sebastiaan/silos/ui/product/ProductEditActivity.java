@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -42,7 +41,6 @@ public class ProductEditActivity extends AppCompatActivity {
 
     private EditText productNameText;
     private EditText productDescriptionText;
-    private Button productBarcodeButton;
     private RecyclerView supplierlist;
 
     private supplierAdapterCheckable supplierAdapter;
@@ -174,7 +172,7 @@ public class ProductEditActivity extends AppCompatActivity {
         alertBuilder.setMessage(current.productname + " already exists. Overwrite?");
         alertBuilder.setPositiveButton("Yes", (dialog, which) -> overrideProduct(current, conflictID));
         alertBuilder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
-
+        alertBuilder.create().show();
     }
 
     private void insertProduct(ui_product input) {
