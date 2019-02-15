@@ -1,5 +1,5 @@
 package com.sebastiaan.silos.barcode;
 
 public interface barScannerCallback {
-    void onDoneRecognize();
+    void onDoneRecognize(String displayValue);
 }

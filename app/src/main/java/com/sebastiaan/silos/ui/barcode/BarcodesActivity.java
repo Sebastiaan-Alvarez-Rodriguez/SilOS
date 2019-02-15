@@ -1,4 +1,4 @@
-package com.sebastiaan.silos.ui.supplier;
+package com.sebastiaan.silos.ui.barcode;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,11 +9,11 @@ import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sebastiaan.silos.R;
-import com.sebastiaan.silos.db.async.helper.supplierHelper;
+import com.sebastiaan.silos.db.async.helper.barcodeHelper;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
-import com.sebastiaan.silos.db.entities.supplier;
+import com.sebastiaan.silos.db.entities.barcode;
 import com.sebastiaan.silos.ui.adapters.actionCallback;
-import com.sebastiaan.silos.ui.adapters.supplier.supplierAdapterAction;
+import com.sebastiaan.silos.ui.adapters.barcode.barcodeAdapterAction;
 import com.sebastiaan.silos.ui.requestCodes;
 
 import java.util.List;
@@ -31,57 +31,67 @@ import androidx.recyclerview.widget.RecyclerView;
 import static com.sebastiaan.silos.ui.resultCodes.INSERTED;
 import static com.sebastiaan.silos.ui.resultCodes.OVERRIDE;
 
-public class SuppliersActivity extends AppCompatActivity implements ActionMode.Callback, actionCallback<supplier> {
-    private AsyncManager manager;
-    private supplierHelper supplierHelper;
+public class BarcodesActivity extends AppCompatActivity implements ActionMode.Callback, actionCallback<barcode> {
 
-    private supplierAdapterAction adapter;
+    private long productID;
+
+    private AsyncManager manager;
+    private barcodeHelper barcodeHelper;
+
+    private barcodeAdapterAction adapter;
     private ActionMode actionMode = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
         prepareAsync();
-        prepareList();
-        setupActionBar();
-        setFab();
+        setContentView(R.layout.activity_list);
+
+
+        Bundle intent = getIntent().getExtras();
+        if (intent == null)
+            finish();
+        else {
+            productID = intent.getLong("productID");
+            prepareList();
+            setupActionBar();
+            setFab();
+        }
     }
 
     private void prepareAsync() {
-         manager = new AsyncManager();
-         supplierHelper = new supplierHelper(manager, getApplicationContext());
+        manager = new AsyncManager();
+        barcodeHelper = new barcodeHelper(manager, getApplicationContext());
     }
 
     private void prepareList() {
-        RecyclerView supplierlist = findViewById(R.id.activity_list_list);
-        supplierHelper.getAll(list -> {
-            supplierlist.setLayoutManager(new LinearLayoutManager(this));
-            adapter = new supplierAdapterAction(list, this);
+        RecyclerView productList = findViewById(R.id.activity_list_list);
+        barcodeHelper.getAll(productID, result -> {
+            productList.setLayoutManager(new LinearLayoutManager(this));
+            adapter = new barcodeAdapterAction(result,this);
             adapter.setSelectedColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
-            supplierlist.setAdapter(adapter);
-            supplierlist.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+            productList.setAdapter(adapter);
+            productList.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         });
     }
 
     private void setupActionBar() {
-        Toolbar toolbar = findViewById(R.id.list_toolbar);
-        setSupportActionBar(toolbar);
+        Toolbar myToolbar = findViewById(R.id.list_toolbar);
+        setSupportActionBar(myToolbar);
         ActionBar actionbar = getSupportActionBar();
         if (actionbar != null) {
             actionbar.setDisplayHomeAsUpEnabled(true);
-            actionbar.setTitle("Suppliers");//TODO: use string resource
+            actionbar.setTitle("Barcodes"); //TODO: use string resource
         }
     }
 
     private void setFab() {
         FloatingActionButton addFab = findViewById(R.id.activity_list_addBtn);
         addFab.setOnClickListener(v-> {
-            Intent intent = new Intent(this, SupplierEditActivity.class);
+            Intent intent = new Intent(this, BarcodeEditActivity.class);
             startActivityForResult(intent, requestCodes.NEW);
         });
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -114,8 +124,8 @@ public class SuppliersActivity extends AppCompatActivity implements ActionMode.C
     }
 
     private void deleteSelected() {
-        List<supplier> list = adapter.getSelected();
-        supplierHelper.deleteAll(list, result -> prepareList());
+        List<barcode> list = adapter.getSelected();
+        barcodeHelper.deleteAll(list, result -> prepareList());
     }
 
     @Override
@@ -148,11 +158,11 @@ public class SuppliersActivity extends AppCompatActivity implements ActionMode.C
     }
 
     @Override
-    public boolean onItemClick(View v, supplier s) {
+    public boolean onItemClick(View v, barcode b) {
         if (actionMode == null) {
-            Intent editIntent = new Intent(this, SupplierEditActivity.class);
+            Intent editIntent = new Intent(this, BarcodeEditActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putParcelable("supplier_parcel", s);
+            bundle.putParcelable("supplier_parcel", b);
             editIntent.putExtras(bundle);
             startActivityForResult(editIntent, requestCodes.EDIT);
         }
@@ -160,10 +170,10 @@ public class SuppliersActivity extends AppCompatActivity implements ActionMode.C
     }
 
     @Override
-    public boolean onItemLongClick(View v, supplier s) {
+    public boolean onItemLongClick(View v, barcode object) {
         if (actionMode == null)
             actionMode = startSupportActionMode(this);
-        return true;
+        return false;
     }
 
     @Override

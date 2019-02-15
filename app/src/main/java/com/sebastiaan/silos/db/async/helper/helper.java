@@ -10,8 +10,6 @@ import com.sebastiaan.silos.db.async.task.insert.insertTask;
 import com.sebastiaan.silos.db.async.task.update.updateTask;
 import com.sebastiaan.silos.db.entities.DbEntity;
 
-import java.util.List;
-
 public abstract class helper<T extends DbEntity<T>> {
     protected AsyncManager manager;
     protected Context context;
@@ -39,9 +37,5 @@ public abstract class helper<T extends DbEntity<T>> {
     protected void delete(T object, DbAsyncInterface<Void> onFinish) {
         deleteTask<T> task = new deleteTask<>(manager, context, object);
         task.setCallback(onFinish).execute();
-    }
-
-    protected void getAll(DbAsyncInterface<List<T>> onFinish) {
-
     }
 }

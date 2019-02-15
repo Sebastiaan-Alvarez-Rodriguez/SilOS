@@ -40,7 +40,7 @@ public class barcodeQueries {
 
         @Override
         protected product doInBackground(Void... voids) {
-            return database.barcodeDao().findByBarcode(rawBarcode);
+            return database.barcodeDao().findProductByBarcode(rawBarcode);
         }
 
         @Override

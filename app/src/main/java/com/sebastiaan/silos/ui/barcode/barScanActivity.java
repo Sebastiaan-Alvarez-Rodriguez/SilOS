@@ -1,16 +1,19 @@
 package com.sebastiaan.silos.ui.barcode;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.util.Log;
 
 import com.camerakit.CameraKit;
 import com.camerakit.CameraKitView;
 import com.sebastiaan.silos.R;
 import com.sebastiaan.silos.barcode.barScannerCallback;
-import com.sebastiaan.silos.barcode.barcodeMode;
 import com.sebastiaan.silos.barcode.barcodeScanner;
-import com.sebastiaan.silos.db.async.barcodeQueries;
+import com.sebastiaan.silos.ui.resultCodes;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,23 +25,20 @@ public class barScanActivity extends AppCompatActivity implements barScannerCall
     private Handler handler;
     private final Runnable runnable = new Runnable() {
         public void run() {
+            Log.e("CAMERA", "Camera fired!");
             cameraKitView.captureImage(barcodeScanner);
             handler.postDelayed(this, DELAY_CAPTURE_MILLISECONDS);
         }
     };
-    private static final int DELAY_CAPTURE_MILLISECONDS = 500;
+    private static final int DELAY_CAPTURE_MILLISECONDS = 5000;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setResult(RESULT_CANCELED);
         setContentView(R.layout.camera_barcode);
 
-        Intent intentions = getIntent();
-        if (!intentions.hasExtra("barcodeMode"))
-            throw new RuntimeException("Barcode activity was not given a mode");
-        else {
-        barcodeMode mode = (barcodeMode) intentions.getSerializableExtra("barcodeMode");
-        barcodeScanner = new barcodeScanner(this, mode);
+        barcodeScanner = new barcodeScanner(this);
 
         cameraKitView = findViewById(R.id.camera_barcode_camView);
         cameraKitView.setSensorPreset(CameraKit.SENSOR_PRESET_BARCODE);
@@ -47,7 +47,6 @@ public class barScanActivity extends AppCompatActivity implements barScannerCall
 
 
         handler = new Handler();
-        }
     }
 
     @Override
@@ -65,15 +64,15 @@ public class barScanActivity extends AppCompatActivity implements barScannerCall
 
     @Override
     protected void onPause() {
-        super.onPause();
         handler.removeCallbacks(runnable);
         cameraKitView.onPause();
+        super.onPause();
     }
 
     @Override
     protected void onStop() {
-        super.onStop();
         cameraKitView.onStop();
+        super.onStop();
     }
 
     @Override
@@ -83,10 +82,24 @@ public class barScanActivity extends AppCompatActivity implements barScannerCall
     }
 
     @Override
-    public void onDoneRecognize() {
-//        barcodeQueries.getProductForBarcode task = new barcodeQueries.getProductForBarcode(manager, getApplicationContext(), product -> {
-//            //TODO: Somehow send product (or rawstring) back to caller (interface?).
-//        }, rawBarcode);
-//        task.execute();
+    public void onDoneRecognize(String displayValue) {
+        shortVibrate();
+        activityFinish(displayValue);
+    }
+
+    private void activityFinish(String displayValue) {
+        Bundle bundle = new Bundle();
+        bundle.putString("result", displayValue);
+        Intent intent = new Intent();
+        intent.putExtras(bundle);
+        setResult(resultCodes.OK, intent);
+        finish();
+    }
+
+    private void shortVibrate() {
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        if (vibrator != null && vibrator.hasVibrator())
+            vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
     }
 }
