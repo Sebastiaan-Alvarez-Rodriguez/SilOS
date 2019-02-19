@@ -13,7 +13,7 @@ public interface productInterface extends DbInterface<product> {
     List<product> getAll();
 
     @Query("SELECT * FROM product where productID = :id")
-    product findByID(int id);
+    product findByID(long id);
 
     @Query("SELECT * FROM product where productName LIKE :name")
     List<product> findByName(String name);

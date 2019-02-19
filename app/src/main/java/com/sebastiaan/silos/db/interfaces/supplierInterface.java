@@ -15,7 +15,7 @@ public interface supplierInterface extends DbInterface<supplier> {
     List<supplier> getAll();
 
     @Query("SELECT * FROM supplier where supplierID = :id")
-    supplier findByID(int id);
+    supplier findByID(long id);
 
     @Query("SELECT * FROM supplier where name LIKE :name")
     List<supplier> findByName(String name);

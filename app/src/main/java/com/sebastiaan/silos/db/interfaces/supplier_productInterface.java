@@ -16,7 +16,7 @@ public interface supplier_productInterface extends DbInterface<supplier_product>
     List<supplier> findSuppliersForProduct(long productID);
 
     @Query("SELECT COUNT(*) FROM supplier_product WHERE supplierID = :supplierID AND productID = :productID")
-    boolean contains(int supplierID, int productID);
+    boolean contains(long supplierID, long productID);
 
     @Query("SELECT COUNT(*) FROM supplier_product")
     int count();
