@@ -14,7 +14,7 @@ import com.sebastiaan.silos.db.async.helper.productHelper;
 import com.sebastiaan.silos.db.async.helper.supplier_productHelper;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.entities.product;
-import com.sebastiaan.silos.ui.adapters.actionCallback;
+import com.sebastiaan.silos.ui.adapters.interfaces.actionCallback;
 import com.sebastiaan.silos.ui.adapters.product.productAdapterAction;
 
 import java.util.ArrayList;

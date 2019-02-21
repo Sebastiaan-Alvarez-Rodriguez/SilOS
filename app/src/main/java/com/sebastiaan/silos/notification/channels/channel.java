@@ -3,6 +3,7 @@ package com.sebastiaan.silos.notification.channels;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 
 public abstract class channel {
     protected final String channelID;
@@ -43,5 +44,13 @@ public abstract class channel {
 
     public String getChannelID() {
         return channelID;
+    }
+
+    public boolean isRegistered(Context applContext) {
+        return isRegistered((NotificationManager) applContext.getSystemService(Context.NOTIFICATION_SERVICE));
+    }
+
+    public boolean isRegistered(NotificationManager manager) {
+        return manager != null && manager.getNotificationChannel(channelID) != null;
     }
 }

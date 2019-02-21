@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import com.sebastiaan.silos.R;
 import com.sebastiaan.silos.db.entities.supplier;
 import com.sebastiaan.silos.ui.adapters.actionAdapter;
-import com.sebastiaan.silos.ui.adapters.actionCallback;
+import com.sebastiaan.silos.ui.adapters.interfaces.actionCallback;
 import com.sebastiaan.silos.ui.adapters.viewholders.supplier.supplierActionViewHolder;
 
 import java.util.List;

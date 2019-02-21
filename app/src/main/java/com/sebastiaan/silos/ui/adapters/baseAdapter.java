@@ -15,6 +15,7 @@ public abstract class baseAdapter<T extends baseViewHolder<U>, U> extends Recycl
     public baseAdapter(List<U> list) {
         this.list = list;
     }
+
     public void itemAdded(U item) {
         list.add(item);
         notifyItemInserted(list.size()-1);

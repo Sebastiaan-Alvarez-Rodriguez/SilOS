@@ -2,6 +2,7 @@ package com.sebastiaan.silos.ui.adapters;
 
 import android.view.View;
 
+import com.sebastiaan.silos.ui.adapters.interfaces.actionCallback;
 import com.sebastiaan.silos.ui.adapters.viewholders.baseViewHolder;
 import com.sebastiaan.silos.ui.adapters.viewholders.viewHolderClickCallback;
 

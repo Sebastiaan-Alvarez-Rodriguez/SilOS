@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.Button;
 
 import com.sebastiaan.silos.R;
+import com.sebastiaan.silos.ui.barcode.BarcodeSelectProductActivity;
 import com.sebastiaan.silos.ui.product.ProductsActivity;
 import com.sebastiaan.silos.ui.supplier.SuppliersActivity;
 
@@ -35,6 +36,9 @@ public class MainActivity extends Activity {
         });
 
         Button barcodebutton = findViewById(R.id.main_barcodes_btn);
-
+        barcodebutton.setOnClickListener(hallo -> {
+            Intent intent = new Intent(this, BarcodeSelectProductActivity.class);
+            startActivity(intent);
+        });
     }
 }

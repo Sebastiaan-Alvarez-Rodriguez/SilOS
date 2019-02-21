@@ -9,7 +9,7 @@ import com.sebastiaan.silos.R;
 import com.sebastiaan.silos.db.async.helper.supplier_productHelper;
 import com.sebastiaan.silos.db.entities.product;
 import com.sebastiaan.silos.ui.adapters.actionAdapter;
-import com.sebastiaan.silos.ui.adapters.actionCallback;
+import com.sebastiaan.silos.ui.adapters.interfaces.actionCallback;
 import com.sebastiaan.silos.ui.adapters.viewholders.product.productActionViewHolder;
 
 import java.util.List;

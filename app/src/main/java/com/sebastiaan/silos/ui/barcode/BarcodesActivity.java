@@ -12,8 +12,8 @@ import com.sebastiaan.silos.R;
 import com.sebastiaan.silos.db.async.helper.barcodeHelper;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.entities.barcode;
-import com.sebastiaan.silos.ui.adapters.actionCallback;
 import com.sebastiaan.silos.ui.adapters.barcode.barcodeAdapterAction;
+import com.sebastiaan.silos.ui.adapters.interfaces.actionCallback;
 import com.sebastiaan.silos.ui.requestCodes;
 
 import java.util.List;
@@ -68,7 +68,7 @@ public class BarcodesActivity extends AppCompatActivity implements ActionMode.Ca
         RecyclerView productList = findViewById(R.id.activity_list_list);
         barcodeHelper.getAll(productID, result -> {
             productList.setLayoutManager(new LinearLayoutManager(this));
-            adapter = new barcodeAdapterAction(result,this);
+            adapter = new barcodeAdapterAction(result, this);
             adapter.setSelectedColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
             productList.setAdapter(adapter);
             productList.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
@@ -87,11 +87,12 @@ public class BarcodesActivity extends AppCompatActivity implements ActionMode.Ca
 
     private void setFab() {
         FloatingActionButton addFab = findViewById(R.id.activity_list_addBtn);
-        addFab.setOnClickListener(v-> {
+        addFab.setOnClickListener(v -> {
             Intent intent = new Intent(this, BarcodeEditActivity.class);
             startActivityForResult(intent, requestCodes.NEW);
         });
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

@@ -12,7 +12,7 @@ import com.sebastiaan.silos.R;
 import com.sebastiaan.silos.db.async.helper.supplierHelper;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.entities.supplier;
-import com.sebastiaan.silos.ui.adapters.actionCallback;
+import com.sebastiaan.silos.ui.adapters.interfaces.actionCallback;
 import com.sebastiaan.silos.ui.adapters.supplier.supplierAdapterAction;
 import com.sebastiaan.silos.ui.requestCodes;
 
