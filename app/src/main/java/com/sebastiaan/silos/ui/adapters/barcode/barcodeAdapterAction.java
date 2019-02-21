@@ -9,8 +9,8 @@ import com.sebastiaan.silos.R;
 import com.sebastiaan.silos.db.entities.barcode;
 import com.sebastiaan.silos.ui.adapters.actionAdapter;
 import com.sebastiaan.silos.ui.adapters.interfaces.actionCallback;
+import com.sebastiaan.silos.ui.adapters.interfaces.clickCallback;
 import com.sebastiaan.silos.ui.adapters.viewholders.barcode.barcodeActionViewHolder;
-import com.sebastiaan.silos.ui.adapters.viewholders.supplier.supplierActionViewHolder;
 
 import java.util.List;
 
@@ -19,8 +19,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class barcodeAdapterAction extends actionAdapter<barcodeActionViewHolder, barcode> {
 
-    public barcodeAdapterAction(List<barcode> list, actionCallback<barcode> callback) {
-        super(list, callback);
+    public barcodeAdapterAction(List<barcode> list, clickCallback<barcode> clickCallback, actionCallback actionCallback) {
+        super(list, clickCallback, actionCallback);
     }
 
     @Override
@@ -32,14 +32,15 @@ public class barcodeAdapterAction extends actionAdapter<barcodeActionViewHolder,
             selectedItems.remove(itempos);
             layout.setBackgroundColor(Color.TRANSPARENT);
             if (selectedItems.isEmpty())
-                callback.onEmptyItemSelection();
+                if (actionCallback != null)
+                    actionCallback.onEmptyItemSelection();
         }
     }
 
     @NonNull
     @Override
     public barcodeActionViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View inflated = LayoutInflater.from(viewGroup.getContext()).inflate(supplierActionViewHolder.layoutResource, viewGroup,false);
+        View inflated = LayoutInflater.from(viewGroup.getContext()).inflate(barcodeActionViewHolder.layoutResource, viewGroup,false);
         return new barcodeActionViewHolder(inflated, this);
     }
 }

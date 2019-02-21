@@ -88,9 +88,9 @@ public class ProductEditActivity extends AppCompatActivity {
     private void prepareList(Set<supplier> enabledList) {
         supplierHelper.getAll(result -> {
             if (enabledList != null)
-                supplierAdapter = new supplierAdapterCheckable(result, enabledList);
+                supplierAdapter = new supplierAdapterCheckable(result, null, enabledList);
             else
-                supplierAdapter = new supplierAdapterCheckable(result);
+                supplierAdapter = new supplierAdapterCheckable(result, null);
 
             supplierlist.setLayoutManager(new LinearLayoutManager(this));
             supplierlist.setAdapter(supplierAdapter);

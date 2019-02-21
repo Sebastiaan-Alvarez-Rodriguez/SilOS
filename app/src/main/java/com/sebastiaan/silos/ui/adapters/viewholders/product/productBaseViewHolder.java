@@ -11,6 +11,7 @@ import com.sebastiaan.silos.db.async.helper.supplier_productHelper;
 import com.sebastiaan.silos.db.entities.product;
 import com.sebastiaan.silos.ui.adapters.supplier.supplierAdapterBase;
 import com.sebastiaan.silos.ui.adapters.viewholders.baseViewHolder;
+import com.sebastiaan.silos.ui.adapters.viewholders.viewHolderClickCallback;
 
 import java.util.ArrayList;
 
@@ -33,7 +34,7 @@ public class productBaseViewHolder extends baseViewHolder<product> {
     private supplierAdapterBase adapter;
     private boolean suppliersReceived;
 
-    public productBaseViewHolder(@NonNull View itemView, supplier_productHelper supplier_productHelper) {
+    public productBaseViewHolder(@NonNull View itemView, supplier_productHelper supplier_productHelper, viewHolderClickCallback clickCallback) {
         super(itemView);
         this.supplier_productHelper = supplier_productHelper;
         suppliersReceived = false;
@@ -57,12 +58,15 @@ public class productBaseViewHolder extends baseViewHolder<product> {
                 detailView.setVisibility(View.GONE);
             }
         });
+
+        itemView.setOnLongClickListener(v -> clickCallback.onClick(v, true, getAdapterPosition()));
+        itemView.setOnClickListener(v -> clickCallback.onClick(v, false, getAdapterPosition()));
     }
 
     private void prepareList(View itemView) {
         supplier_productHelper.getForProduct(id, result -> {
             productSupplierView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
-            adapter = new supplierAdapterBase(new ArrayList<>(result));
+            adapter = new supplierAdapterBase(new ArrayList<>(result), null);
             productSupplierView.setAdapter(adapter);
             productSupplierView.addItemDecoration(new DividerItemDecoration(itemView.getContext(), LinearLayoutManager.VERTICAL));
             suppliersReceived = true;

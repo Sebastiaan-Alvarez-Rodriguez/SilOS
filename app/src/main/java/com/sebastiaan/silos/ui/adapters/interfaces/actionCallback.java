@@ -1,5 +1,5 @@
 package com.sebastiaan.silos.ui.adapters.interfaces;
 
-public interface actionCallback<T> extends baseCallback<T> {
+public interface actionCallback {
     void onEmptyItemSelection();
 }

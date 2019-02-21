@@ -1,5 +1,6 @@
 package com.sebastiaan.silos.ui.adapters.viewholders.barcode;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -19,10 +20,12 @@ public class barcodeBaseViewHolder extends baseViewHolder<barcode> {
         super(itemView);
         barcode_string = itemView.findViewById(R.id.barcode_list_string);
         barcode_amount = itemView.findViewById(R.id.barcode_list_amount);
+        Log.e("TESTTTT", "barcode_string in barcodeBaseViewholder is " + (barcode_string == null ? "not found" : "found"));
     }
 
     @Override
     public void set(barcode barcode) {
+        Log.e("TESTTTT", "barcode_string in barcodeBaseViewholder is " + (barcode_string == null ? "null" : "not null"));
         barcode_string.setText(barcode.getBarcodeString());
         barcode_amount.setText(String.valueOf(barcode.getAmount()));
     }

@@ -15,6 +15,7 @@ import com.sebastiaan.silos.db.async.helper.supplier_productHelper;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.entities.product;
 import com.sebastiaan.silos.ui.adapters.interfaces.actionCallback;
+import com.sebastiaan.silos.ui.adapters.interfaces.clickCallback;
 import com.sebastiaan.silos.ui.adapters.product.productAdapterAction;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import static com.sebastiaan.silos.ui.resultCodes.INSERTED;
 import static com.sebastiaan.silos.ui.resultCodes.OVERRIDE;
 
-public class ProductsActivity extends AppCompatActivity implements ActionMode.Callback, actionCallback<product> {
+public class ProductsActivity extends AppCompatActivity implements ActionMode.Callback, clickCallback<product>, actionCallback {
     private static final int NEW_PRODUCT = 0;
     private static final int EDIT_PRODUCT = 1;
 
@@ -65,7 +66,7 @@ public class ProductsActivity extends AppCompatActivity implements ActionMode.Ca
         RecyclerView productList = findViewById(R.id.activity_list_list);
         productHelper.getAll(result -> {
             productList.setLayoutManager(new LinearLayoutManager(this));
-            adapter = new productAdapterAction(result,this, supplier_productHelper);
+            adapter = new productAdapterAction(result,this, this, supplier_productHelper);
             adapter.setSelectedColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
             productList.setAdapter(adapter);
             productList.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));

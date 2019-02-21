@@ -10,18 +10,19 @@ import com.sebastiaan.silos.db.async.helper.supplier_productHelper;
 import com.sebastiaan.silos.db.entities.product;
 import com.sebastiaan.silos.ui.adapters.actionAdapter;
 import com.sebastiaan.silos.ui.adapters.interfaces.actionCallback;
-import com.sebastiaan.silos.ui.adapters.viewholders.product.productActionViewHolder;
+import com.sebastiaan.silos.ui.adapters.interfaces.clickCallback;
+import com.sebastiaan.silos.ui.adapters.viewholders.product.productBaseViewHolder;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-public class productAdapterAction extends actionAdapter<productActionViewHolder, product> {
+public class productAdapterAction extends actionAdapter<productBaseViewHolder, product> {
     private supplier_productHelper supplier_productHelper;
 
-    public productAdapterAction(List<product> list, actionCallback<product> callback, supplier_productHelper supplier_productHelper) {
-        super(list, callback);
+    public productAdapterAction(List<product> list, clickCallback<product> clickCallback, actionCallback actionCallback, supplier_productHelper supplier_productHelper) {
+        super(list, clickCallback, actionCallback);
         this.supplier_productHelper = supplier_productHelper;
     }
 
@@ -34,14 +35,15 @@ public class productAdapterAction extends actionAdapter<productActionViewHolder,
             selectedItems.remove(itempos);
             layout.setBackgroundColor(Color.TRANSPARENT);
             if (selectedItems.isEmpty())
-                callback.onEmptyItemSelection();
+                if (actionCallback != null)
+                    actionCallback.onEmptyItemSelection();
         }
     }
 
     @NonNull
     @Override
-    public productActionViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View inflated = LayoutInflater.from(viewGroup.getContext()).inflate(productActionViewHolder.layoutResource, viewGroup,false);
-        return new productActionViewHolder(inflated, supplier_productHelper, this);
+    public productBaseViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        View inflated = LayoutInflater.from(viewGroup.getContext()).inflate(productBaseViewHolder.layoutResource, viewGroup,false);
+        return new productBaseViewHolder(inflated, supplier_productHelper, this);
     }
 }

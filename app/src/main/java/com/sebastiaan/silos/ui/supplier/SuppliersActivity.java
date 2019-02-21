@@ -13,6 +13,7 @@ import com.sebastiaan.silos.db.async.helper.supplierHelper;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.entities.supplier;
 import com.sebastiaan.silos.ui.adapters.interfaces.actionCallback;
+import com.sebastiaan.silos.ui.adapters.interfaces.clickCallback;
 import com.sebastiaan.silos.ui.adapters.supplier.supplierAdapterAction;
 import com.sebastiaan.silos.ui.requestCodes;
 
@@ -31,7 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import static com.sebastiaan.silos.ui.resultCodes.INSERTED;
 import static com.sebastiaan.silos.ui.resultCodes.OVERRIDE;
 
-public class SuppliersActivity extends AppCompatActivity implements ActionMode.Callback, actionCallback<supplier> {
+public class SuppliersActivity extends AppCompatActivity implements ActionMode.Callback, clickCallback<supplier>, actionCallback {
     private AsyncManager manager;
     private supplierHelper supplierHelper;
 
@@ -57,7 +58,7 @@ public class SuppliersActivity extends AppCompatActivity implements ActionMode.C
         RecyclerView supplierlist = findViewById(R.id.activity_list_list);
         supplierHelper.getAll(list -> {
             supplierlist.setLayoutManager(new LinearLayoutManager(this));
-            adapter = new supplierAdapterAction(list, this);
+            adapter = new supplierAdapterAction(list, this, this);
             adapter.setSelectedColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
             supplierlist.setAdapter(adapter);
             supplierlist.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));

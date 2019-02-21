@@ -10,7 +10,7 @@ import com.sebastiaan.silos.db.async.helper.productHelper;
 import com.sebastiaan.silos.db.async.helper.supplier_productHelper;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.entities.product;
-import com.sebastiaan.silos.ui.adapters.interfaces.baseCallback;
+import com.sebastiaan.silos.ui.adapters.interfaces.clickCallback;
 import com.sebastiaan.silos.ui.adapters.product.productAdapterBase;
 
 import androidx.annotation.Nullable;
@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-public class BarcodeSelectProductActivity extends AppCompatActivity implements baseCallback<product> {
+public class BarcodeSelectProductActivity extends AppCompatActivity implements clickCallback<product> {
     private AsyncManager manager;
     private productHelper productHelper;
     private supplier_productHelper supplier_productHelper;
@@ -48,8 +48,8 @@ public class BarcodeSelectProductActivity extends AppCompatActivity implements b
     private void prepareList() {
         RecyclerView productList = findViewById(R.id.activity_list_list);
         productHelper.getAll(result -> {
+            adapter = new productAdapterBase(result, this, supplier_productHelper);
             productList.setLayoutManager(new LinearLayoutManager(this));
-            adapter = new productAdapterBase(result, supplier_productHelper);
             productList.setAdapter(adapter);
             productList.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         });
@@ -85,7 +85,7 @@ public class BarcodeSelectProductActivity extends AppCompatActivity implements b
     public boolean onItemClick(View v, product p) {
         Intent editIntent = new Intent(this, BarcodesActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable("productparcel", p);
+        bundle.putParcelable("product_parcel", p);
         editIntent.putExtras(bundle);
         startActivity(editIntent);
         return true;

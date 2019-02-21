@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 
 public class barcodeActionViewHolder extends barcodeBaseViewHolder {
     public static final @LayoutRes
-    int layoutResource = R.layout.supplier_list_item;
+    int layoutResource = R.layout.barcode_list_item;
 
     public barcodeActionViewHolder(@NonNull View itemView, viewHolderClickCallback clickCallback) {
         super(itemView);

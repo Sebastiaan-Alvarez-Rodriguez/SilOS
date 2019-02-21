@@ -2,6 +2,7 @@ package com.sebastiaan.silos.ui.barcode;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -13,6 +14,7 @@ import com.sebastiaan.silos.R;
 import com.sebastiaan.silos.db.async.helper.barcodeHelper;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.entities.barcode;
+import com.sebastiaan.silos.db.entities.product;
 import com.sebastiaan.silos.ui.entities.ui_barcode;
 import com.sebastiaan.silos.ui.inputMode;
 import com.sebastiaan.silos.ui.inputStatus;
@@ -38,7 +40,7 @@ public class BarcodeEditActivity extends AppCompatActivity {
     private TextView recognisedText;
     private EditText amount;
 
-    private long productID;
+    private product product;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,16 +52,17 @@ public class BarcodeEditActivity extends AppCompatActivity {
         setupActionBar();
         setupButton();
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null && !bundle.containsKey("productID"))
+        if (bundle == null || !bundle.containsKey("product_parcel"))
             throw new RuntimeException("BarcodeEditActivity did not get a productID in bundle");
 
-        inputMode = (bundle != null && bundle.containsKey("supplier_parcel")) ? EDIT : NEW;
 
         //noinspection ConstantConditions
-        productID = bundle.getLong("productID");
+        product = bundle.getParcelable("product_parcel");
+
+        inputMode = (bundle.containsKey("barcode_parcel")) ? EDIT : NEW;
 
         if (inputMode == EDIT) {
-            edit_barcode = bundle.getParcelable("supplier_parcel");
+            edit_barcode = bundle.getParcelable("barcode_parcel");
             //noinspection ConstantConditions
             setBarcode(edit_barcode);
         } else {
@@ -142,7 +145,7 @@ public class BarcodeEditActivity extends AppCompatActivity {
     private void onDoneChecking(ui_barcode input, inputStatus state) {
         switch (state) {
             case OK: {
-                barcodeHelper.insert(input, productID, result -> activityFinish(INSERTED, input.to_barcode(productID)));
+                barcodeHelper.insert(input, product.getProductID(), result -> activityFinish(INSERTED, input.to_barcode(product.getProductID())));
                 break;
             }
             case FIELDSEMPTY: showEmptyErrors(); break;
@@ -171,6 +174,7 @@ public class BarcodeEditActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.putExtras(bundle);
         setResult(resultCode, intent);
+        Log.e("TESTTTTT", "Activity finish success!");
         finish();
     }
 
