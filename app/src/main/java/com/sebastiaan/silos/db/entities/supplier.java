@@ -5,23 +5,21 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.sebastiaan.silos.db.AppDatabase;
-import com.sebastiaan.silos.db.interfaces.DbInterface;
+import com.sebastiaan.silos.db.interfaces.DbNamedInterface;
 
 import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import java.io.Serializable;
-
 @Entity(indices = {@Index(value = {"name"}, unique = true)})
-public class supplier extends DbEntity<supplier> implements Parcelable {
+public class supplier extends DbEntityNamed<supplier> implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private long supplierID;
-    private String name, streetname, housenumber, city, postalcode, phonenumber, emailaddress, website;
+    private String streetname, housenumber, city, postalcode, phonenumber, emailaddress, website;
 
     public supplier(String name, String streetname, String housenumber, String city, String postalcode, String phonenumber, String emailaddress, String website) {
-        this.name = name;
+        super(name);
         this.streetname = streetname;
         this.housenumber = housenumber;
         this.city = city;
@@ -32,6 +30,7 @@ public class supplier extends DbEntity<supplier> implements Parcelable {
     }
 
     protected supplier(Parcel in) {
+        super(null);
         supplierID = in.readLong();
         name = in.readString();
         streetname = in.readString();
@@ -61,14 +60,6 @@ public class supplier extends DbEntity<supplier> implements Parcelable {
 
     public void setSupplierID(long supplierID) {
         this.supplierID = supplierID;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getStreetname() {
@@ -161,7 +152,7 @@ public class supplier extends DbEntity<supplier> implements Parcelable {
     }
 
     @Override
-    public DbInterface<supplier> getInterface(Context context) {
+    public DbNamedInterface<supplier> getInterface(Context context) {
         return AppDatabase.getDatabase(context).supplierDao();
     }
 }

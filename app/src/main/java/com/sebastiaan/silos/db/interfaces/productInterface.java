@@ -8,21 +8,18 @@ import androidx.room.Dao;
 import androidx.room.Query;
 
 @Dao
-public interface productInterface extends DbInterface<product> {
+public interface productInterface extends DbNamedInterface<product>, DbIDInterface<product> {
     @Query("SELECT * FROM product")
     List<product> getAll();
 
     @Query("SELECT * FROM product where productID = :id")
     product findByID(long id);
 
-    @Query("SELECT * FROM product where productName LIKE :name")
+    @Query("SELECT * FROM product where name LIKE :name")
     List<product> findByName(String name);
 
-    @Query("SELECT * FROM product where productName = :name")
+    @Query("SELECT * FROM product where name = :name")
     product findByNameExact(String name);
-
-    @Query("SELECT COUNT(*) FROM product where productName = :productName")
-    boolean contains(String productName);
 
     @Query("SELECT COUNT(*) from product")
     int countProducts();

@@ -1,7 +1,9 @@
 package com.sebastiaan.silos.ui.entities;
 
+import com.sebastiaan.silos.db.async.helper.barcodeHelper;
+import com.sebastiaan.silos.db.async.helper.helper;
 import com.sebastiaan.silos.db.entities.barcode;
-public class ui_barcode {
+public class ui_barcode extends UiEntity {
     public String barcodeString;
     public int amount;
 

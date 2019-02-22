@@ -2,7 +2,7 @@ package com.sebastiaan.silos.ui.entities;
 
 import com.sebastiaan.silos.db.entities.supplier;
 
-public class ui_supplier {
+public class ui_supplier extends UiEntity{
     public String name,
     streetname,
     housenumber,

@@ -114,7 +114,7 @@ public class ProductEditActivity extends AppCompatActivity {
     }
 
     private void setProduct(product product) {
-        productNameText.setText(product.getProductName());
+        productNameText.setText(product.getName());
         productDescriptionText.setText(product.getProductDescription());
     }
 
@@ -129,8 +129,8 @@ public class ProductEditActivity extends AppCompatActivity {
             return;
         }
         //check for override issues when new product is done or when existing product changed name
-        if (inputMode == NEW || (inputMode == EDIT && !edit_product.getProductName().equals(current.productname))) {
-            productHelper.find(current.productname, result -> {
+        if (inputMode == NEW || (inputMode == EDIT && !edit_product.getName().equals(current.productname))) {
+            productHelper.findByNameExact(new product("",""), current.productname, result -> {
                 if (result == null)
                     onDoneChecking(current, inputStatus.OK);
                 else

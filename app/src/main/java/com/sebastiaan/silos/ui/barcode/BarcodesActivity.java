@@ -83,7 +83,7 @@ public class BarcodesActivity extends AppCompatActivity implements ActionMode.Ca
         ActionBar actionbar = getSupportActionBar();
         if (actionbar != null) {
             actionbar.setDisplayHomeAsUpEnabled(true);
-            actionbar.setTitle("Barcodes for " + product.getProductName()); //TODO: use string resource
+            actionbar.setTitle("Barcodes for " + product.getName()); //TODO: use string resource
         }
     }
 
