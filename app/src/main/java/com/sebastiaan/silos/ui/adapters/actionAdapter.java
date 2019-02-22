@@ -2,24 +2,27 @@ package com.sebastiaan.silos.ui.adapters;
 
 import android.view.View;
 
+import com.sebastiaan.silos.ui.adapters.interfaces.actionCallback;
+import com.sebastiaan.silos.ui.adapters.interfaces.clickCallback;
 import com.sebastiaan.silos.ui.adapters.viewholders.baseViewHolder;
-import com.sebastiaan.silos.ui.adapters.viewholders.viewHolderClickCallback;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public abstract class actionAdapter<T extends baseViewHolder<U>, U> extends baseAdapter<T, U> implements viewHolderClickCallback {
+import androidx.annotation.Nullable;
+
+public abstract class actionAdapter<T extends baseViewHolder<U>, U> extends baseAdapter<T, U> {
     private boolean multiSelect = false;
 
-    protected actionCallback<U> callback;
     protected HashSet<Integer> selectedItems = new HashSet<>();
+    protected actionCallback actionCallback;
 
     protected int selectedColor;
 
-    public actionAdapter(List<U> list, actionCallback<U> callback) {
-        super(list);
-        this.callback = callback;
+    public actionAdapter(List<U> list, @Nullable clickCallback<U> callback, @Nullable actionCallback clickCallback) {
+        super(list, callback);
+        this.actionCallback = clickCallback;
     }
 
     public List<U> getSelected() {
@@ -41,22 +44,29 @@ public abstract class actionAdapter<T extends baseViewHolder<U>, U> extends base
         selectedItems = new HashSet<>();
     }
 
-    private boolean onSingleClick(View v, int position) {
-        boolean result = callback.onItemClick(v, list.get(position));
-        if (multiSelect)
-            selectItem(v, position);
-        return result;
-    }
-
-    private boolean onLongClick(View v, int position) {
-        boolean result = callback.onItemLongClick(v, list.get(position));
-        multiSelect = true;
-        selectItem(v, position);
-        return result;
-    }
-
     @Override
     public boolean onClick(View v, boolean longclicked, int position) {
         return longclicked ? onLongClick(v, position) : onSingleClick(v, position);
     }
+
+    private boolean onSingleClick(View v, int position) {
+        if (clickCallback != null) {
+            boolean result = clickCallback.onItemClick(v, list.get(position));
+            if (multiSelect)
+                selectItem(v, position);
+            return result;
+        }
+        return false;
+    }
+
+    private boolean onLongClick(View v, int position) {
+        if (clickCallback != null) {
+            boolean result = clickCallback.onItemLongClick(v, list.get(position));
+            multiSelect = true;
+            selectItem(v, position);
+            return result;
+        }
+        return false;
+    }
+
 }

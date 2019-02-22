@@ -1,7 +1,7 @@
 package com.sebastiaan.silos.ui.entities;
 
 import com.sebastiaan.silos.db.entities.barcode;
-public class ui_barcode {
+public class ui_barcode extends UiEntity {
     public String barcodeString;
     public int amount;
 
@@ -11,14 +11,10 @@ public class ui_barcode {
     }
 
     public barcode to_barcode(int productID) {
-        barcode b = new barcode(barcodeString, amount);
-        b.setProductID(productID);
-        return b;
+        return new barcode(barcodeString, productID, amount);
     }
 
     public barcode to_barcode(long productID) {
-        barcode b = new barcode(barcodeString, amount);
-        b.setProductID(productID);
-        return b;
+        return new barcode(barcodeString, productID, amount);
     }
 }

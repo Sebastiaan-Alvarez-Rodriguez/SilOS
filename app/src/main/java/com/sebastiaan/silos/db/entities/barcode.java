@@ -5,7 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.sebastiaan.silos.db.AppDatabase;
-import com.sebastiaan.silos.db.interfaces.DbInterface;
+import com.sebastiaan.silos.db.interfaces.DbIDInterface;
 
 import java.util.Objects;
 
@@ -17,8 +17,9 @@ import androidx.room.PrimaryKey;
 import static androidx.room.ForeignKey.CASCADE;
 
 @Entity
-public class barcode extends DbEntity <barcode> implements Parcelable {
+public class barcode extends DbEntity<barcode> implements Parcelable {
     @PrimaryKey
+    private long barcodeID;
     @NonNull
     private String barcodeString;
     @ForeignKey(entity = product.class, parentColumns = "productID", childColumns = "productID", onDelete = CASCADE)
@@ -26,8 +27,9 @@ public class barcode extends DbEntity <barcode> implements Parcelable {
 
     private int amount;
 
-    public barcode(@NonNull String barcodeString, int amount) {
+    public barcode(@NonNull String barcodeString, long productID, int amount) {
         this.barcodeString = barcodeString;
+        this.productID = productID;
         this.amount = amount;
     }
 
@@ -48,6 +50,14 @@ public class barcode extends DbEntity <barcode> implements Parcelable {
             return new barcode[size];
         }
     };
+
+    public long getBarcodeID() {
+        return barcodeID;
+    }
+
+    public void setBarcodeID(long barcodeID) {
+        this.barcodeID = barcodeID;
+    }
 
     public long getProductID() {
         return productID;
@@ -75,11 +85,6 @@ public class barcode extends DbEntity <barcode> implements Parcelable {
     }
 
     @Override
-    public DbInterface<barcode> getInterface(Context context) {
-        return AppDatabase.getDatabase(context).barcodeDao();
-    }
-
-    @Override
     public int describeContents() {
         return 0;
     }
@@ -88,5 +93,10 @@ public class barcode extends DbEntity <barcode> implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(barcodeString);
         dest.writeInt(amount);
+    }
+
+    @Override
+    public DbIDInterface<barcode> getInterface(Context context) {
+        return AppDatabase.getDatabase(context).barcodeDao();
     }
 }

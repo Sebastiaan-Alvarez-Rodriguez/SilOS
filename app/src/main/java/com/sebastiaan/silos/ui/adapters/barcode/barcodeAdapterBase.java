@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 
 import com.sebastiaan.silos.db.entities.barcode;
 import com.sebastiaan.silos.ui.adapters.baseAdapter;
+import com.sebastiaan.silos.ui.adapters.interfaces.clickCallback;
 import com.sebastiaan.silos.ui.adapters.viewholders.barcode.barcodeBaseViewHolder;
 
 import java.util.List;
@@ -13,8 +14,8 @@ import androidx.annotation.NonNull;
 
 public class barcodeAdapterBase extends baseAdapter<barcodeBaseViewHolder, barcode> {
 
-    public barcodeAdapterBase(List<barcode> list) {
-        super(list);
+    public barcodeAdapterBase(List<barcode> list, clickCallback<barcode> clickCallback) {
+        super(list, clickCallback);
     }
 
     @NonNull

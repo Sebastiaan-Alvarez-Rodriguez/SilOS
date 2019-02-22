@@ -23,5 +23,4 @@ public interface DbInterface<T extends DbEntity<T>> {
     void deleteAll(T[] ts);
     @Delete
     void delete(T t);
-
 }

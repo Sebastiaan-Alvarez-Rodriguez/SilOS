@@ -8,17 +8,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.sebastiaan.silos.R;
 import com.sebastiaan.silos.db.async.helper.barcodeHelper;
+import com.sebastiaan.silos.db.async.helper.productHelper;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.entities.barcode;
+import com.sebastiaan.silos.db.entities.product;
+import com.sebastiaan.silos.db.policy.DbPolicyInterface;
+import com.sebastiaan.silos.db.policy.insert.barcodeNewPolicy;
 import com.sebastiaan.silos.ui.entities.ui_barcode;
 import com.sebastiaan.silos.ui.inputMode;
 import com.sebastiaan.silos.ui.inputStatus;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -27,8 +31,9 @@ import static com.sebastiaan.silos.ui.inputMode.NEW;
 import static com.sebastiaan.silos.ui.resultCodes.CANCELED;
 import static com.sebastiaan.silos.ui.resultCodes.INSERTED;
 import static com.sebastiaan.silos.ui.resultCodes.OK;
+import static com.sebastiaan.silos.ui.resultCodes.OVERRIDE;
 
-public class BarcodeEditActivity extends AppCompatActivity {
+public class BarcodeEditActivity extends AppCompatActivity implements DbPolicyInterface<barcode> {
     private AsyncManager manager;
     private barcodeHelper barcodeHelper;
     private inputMode inputMode;
@@ -38,7 +43,9 @@ public class BarcodeEditActivity extends AppCompatActivity {
     private TextView recognisedText;
     private EditText amount;
 
-    private long productID;
+    private product product;
+
+    private int resultStatus;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,16 +57,17 @@ public class BarcodeEditActivity extends AppCompatActivity {
         setupActionBar();
         setupButton();
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null && !bundle.containsKey("productID"))
+        if (bundle == null || !bundle.containsKey("product_parcel"))
             throw new RuntimeException("BarcodeEditActivity did not get a productID in bundle");
 
-        inputMode = (bundle != null && bundle.containsKey("supplier_parcel")) ? EDIT : NEW;
 
         //noinspection ConstantConditions
-        productID = bundle.getLong("productID");
+        product = bundle.getParcelable("product_parcel");
+
+        inputMode = (bundle.containsKey("barcode_parcel")) ? EDIT : NEW;
 
         if (inputMode == EDIT) {
-            edit_barcode = bundle.getParcelable("supplier_parcel");
+            edit_barcode = bundle.getParcelable("barcode_parcel");
             //noinspection ConstantConditions
             setBarcode(edit_barcode);
         } else {
@@ -79,7 +87,7 @@ public class BarcodeEditActivity extends AppCompatActivity {
     }
 
     private void setupActionBar() {
-        Toolbar myToolbar = findViewById(R.id.barcode_edit_toolbar);
+        Toolbar myToolbar = findViewById(R.id.product_edit_toolbar);
         setSupportActionBar(myToolbar);
         ActionBar actionbar = getSupportActionBar();
         if (actionbar != null)
@@ -113,67 +121,61 @@ public class BarcodeEditActivity extends AppCompatActivity {
         return new ui_barcode(recognisedText.getText().toString(), Integer.valueOf(amount.getText().toString()));
     }
 
-    private void checkInput() {
+    private inputStatus checkInput() {
         ui_barcode current = getBarcode();
-        if (current.barcodeString.isEmpty()) {
-            onDoneChecking(current, inputStatus.FIELDSEMPTY);
-            return;
+        if (current.barcodeString.isEmpty() || amount.getText().length() == 0 || current.amount < 1) {
+            showEmptyErrors();
+            return inputStatus.FIELDSEMPTY;
         }
-
-        if (inputMode == NEW || (inputMode == EDIT && !edit_barcode.getBarcodeString().equals(current.barcodeString))) {
-            barcodeHelper.find(current.barcodeString, result -> {
-                if (result == null)
-                    onDoneChecking(current, inputStatus.OK);
-                else
-                    onDoneChecking(current, inputStatus.CONFLICT);
-            });
-            return;
-        }
-        onDoneChecking(current, inputStatus.OK);
+        return inputStatus.OK;
     }
 
     private void showEmptyErrors() {
-        if (recognisedText.getText().length() == 0)
+        ui_barcode current = getBarcode();
+        if (current.barcodeString.length() == 0)
             associateButton.setError("You must associate a barcode");
         if (amount.getText().length() == 0)
-            amount.setError("You must specify how many products are counted for this barcode");
+            amount.setError("You must specify how many products (>0) are counted for this barcode");
     }
 
-    private void onDoneChecking(ui_barcode input, inputStatus state) {
-        switch (state) {
-            case OK: {
-                barcodeHelper.insert(input, productID, result -> activityFinish(INSERTED, input.to_barcode(productID)));
-                break;
-            }
-            case FIELDSEMPTY: showEmptyErrors(); break;
-            case CONFLICT:
-                Snackbar snackbar = Snackbar.make(findViewById(R.id.barcode_edit_layout),
-                        "Barcode already in use by another product", Snackbar.LENGTH_LONG);
-                snackbar.show();
-
-    //        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-    //        alertBuilder.setTitle("Overwrite");
-    //        alertBuilder.setMessage(" already exists. Overwrite?");
-    //        alertBuilder.setPositiveButton("Yes", (dialog, which) -> {
-    //            barcodeHelper.update(supplierID, input, result -> {
-    //                activityFinish(OVERRIDE, input.to_barcode(productID));
-    //            });
-    //        });
-    //        alertBuilder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
-    //        alertBuilder.create().show();
-                break;
+    private void storeBarcode(ui_barcode input) {
+        if (inputMode == NEW) {
+            resultStatus = INSERTED;
+            barcodeNewPolicy n = new barcodeNewPolicy(this, barcodeHelper);
+            n.insert(input, product.getProductID());
         }
     }
 
-    private void activityFinish(int resultCode, barcode barcode) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("result", barcode);
-        Intent intent = new Intent();
-        intent.putExtras(bundle);
-        setResult(resultCode, intent);
-        finish();
+    private void store_forceBarcode(barcode input) {
+        if (inputMode == NEW) {
+            resultStatus = OVERRIDE; //TODO: does this work on UI?
+            barcodeNewPolicy n = new barcodeNewPolicy(this, barcodeHelper);
+            n.insert_force(input);
+        }
     }
 
+    @Override
+    public void onConflict(barcode entity, barcode conflictEntity) {
+        productHelper h = new productHelper(manager, getApplicationContext());
+        h.findByID(new product("", ""), conflictEntity.getProductID(), conflictProduct -> {
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+            alertBuilder.setTitle("Overwrite");
+            alertBuilder.setMessage("Barcode already assigned to "+conflictProduct.getName()+". Overwrite?");
+            alertBuilder.setPositiveButton("Yes", (dialog, which) -> store_forceBarcode(entity));
+            alertBuilder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+            alertBuilder.create().show();
+        });
+    }
+
+    @Override
+    public void onSuccess(long insertedEntityID) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("result", getBarcode().to_barcode(insertedEntityID));
+        Intent intent = new Intent();
+        intent.putExtras(bundle);
+        setResult(resultStatus, intent);
+        finish();
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -182,7 +184,9 @@ public class BarcodeEditActivity extends AppCompatActivity {
                 finish();
                 break;
             case R.id.edit_menu_done:
-                checkInput();
+                if (checkInput() == inputStatus.OK) {
+                    storeBarcode(getBarcode());
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);

@@ -5,10 +5,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.sebastiaan.silos.db.AppDatabase;
-import com.sebastiaan.silos.db.interfaces.DbInterface;
+import com.sebastiaan.silos.db.interfaces.DbIDInterface;
 
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
 
 import static androidx.room.ForeignKey.CASCADE;
 
@@ -20,8 +22,11 @@ import static androidx.room.ForeignKey.CASCADE;
  * - If a supplier is deleted, all supplier-product links with given supplier are deleted, too
  * - If a product is deleted, all supplier-product links with given product are deleted, too
  */
-@Entity(primaryKeys = {"supplierID","productID"})
+@Entity(indices = {@Index(value = {"supplierID", "productID"}, unique = true)})
 public class supplier_product extends DbEntity<supplier_product> implements Parcelable {
+    @PrimaryKey
+    private long supplier_productID;
+
     @ForeignKey(entity = supplier.class, parentColumns = "supplierID", childColumns = "supplierID",  onDelete = CASCADE)
     private long supplierID;
     @ForeignKey(entity = product.class, parentColumns = "productID", childColumns = "productID", onDelete = CASCADE)
@@ -48,6 +53,14 @@ public class supplier_product extends DbEntity<supplier_product> implements Parc
             return new supplier_product[size];
         }
     };
+
+    public long getSupplier_productID() {
+        return supplier_productID;
+    }
+
+    public void setSupplier_productID(long supplier_productID) {
+        this.supplier_productID = supplier_productID;
+    }
 
     public long getSupplierID() {
         return supplierID;
@@ -77,7 +90,7 @@ public class supplier_product extends DbEntity<supplier_product> implements Parc
     }
 
     @Override
-    public DbInterface<supplier_product> getInterface(Context context) {
+    public DbIDInterface<supplier_product> getInterface(Context context) {
         return AppDatabase.getDatabase(context).supplier_productDao();
     }
 }

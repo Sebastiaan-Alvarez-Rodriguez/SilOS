@@ -22,8 +22,9 @@
         <activity android:name=".ui.supplier.SuppliersActivity" />
         <activity android:name=".ui.supplier.SupplierEditActivity" />
         <activity android:name=".ui.barcode.barScanActivity" />
-        <activity android:name=".ui.barcode.BarcodesActivity" />
+        <activity android:name=".ui.barcode.BarcodeSelectProductActivity" />
         <activity android:name=".ui.barcode.BarcodeEditActivity" />
+        <activity android:name=".ui.barcode.BarcodesActivity" />
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"

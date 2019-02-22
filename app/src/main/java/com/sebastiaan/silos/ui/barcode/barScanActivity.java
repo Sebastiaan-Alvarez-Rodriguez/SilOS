@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.util.Log;
 
 import com.camerakit.CameraKit;
 import com.camerakit.CameraKitView;
@@ -25,7 +24,6 @@ public class barScanActivity extends AppCompatActivity implements barScannerCall
     private Handler handler;
     private final Runnable runnable = new Runnable() {
         public void run() {
-            Log.e("CAMERA", "Camera fired!");
             cameraKitView.captureImage(barcodeScanner);
             handler.postDelayed(this, DELAY_CAPTURE_MILLISECONDS);
         }

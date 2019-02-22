@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.sebastiaan.silos.db.async.DbAsyncInterface;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
-import com.sebastiaan.silos.db.async.task.find.barcodeFindTask;
+import com.sebastiaan.silos.db.async.task.find.findByBarcodeTask;
 import com.sebastiaan.silos.db.async.task.getAll.barcodeGetAllTask;
 import com.sebastiaan.silos.db.entities.barcode;
 import com.sebastiaan.silos.ui.entities.ui_barcode;
@@ -30,7 +30,7 @@ public class barcodeHelper extends helper<barcode> {
     }
 
     public void find(String barcodeString, DbAsyncInterface<barcode> onFinish) {
-        barcodeFindTask task = new barcodeFindTask(manager, context, barcodeString);
+        findByBarcodeTask task = new findByBarcodeTask(manager, context, barcodeString);
         task.setCallback(onFinish).execute();
     }
 }

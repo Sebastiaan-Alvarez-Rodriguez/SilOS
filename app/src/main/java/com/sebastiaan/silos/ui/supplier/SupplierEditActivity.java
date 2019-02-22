@@ -10,6 +10,8 @@ import com.sebastiaan.silos.R;
 import com.sebastiaan.silos.db.async.helper.supplierHelper;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.entities.supplier;
+import com.sebastiaan.silos.db.policy.DbPolicyInterface;
+import com.sebastiaan.silos.db.policy.insert.supplierNewPolicy;
 import com.sebastiaan.silos.ui.entities.ui_supplier;
 import com.sebastiaan.silos.ui.inputMode;
 import com.sebastiaan.silos.ui.inputStatus;
@@ -26,7 +28,7 @@ import static com.sebastiaan.silos.ui.resultCodes.CANCELED;
 import static com.sebastiaan.silos.ui.resultCodes.INSERTED;
 import static com.sebastiaan.silos.ui.resultCodes.OVERRIDE;
 
-public class SupplierEditActivity extends AppCompatActivity {
+public class SupplierEditActivity extends AppCompatActivity implements DbPolicyInterface<supplier> {
     private AsyncManager manager;
     private supplierHelper supplierHelper;
     private inputMode inputMode;
@@ -40,6 +42,8 @@ public class SupplierEditActivity extends AppCompatActivity {
     private EditText phonenumber;
     private EditText email;
     private EditText webaddress;
+
+    private int resultStatus = CANCELED;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -109,24 +113,14 @@ public class SupplierEditActivity extends AppCompatActivity {
                 webaddress.getText().toString());
     }
 
-    private void checkInput() {
+    private inputStatus checkInput() {
         ui_supplier current = getSupplier();
         if (current.name.isEmpty() || current.city.isEmpty() || current.postalcode.isEmpty() ||
                 current.streetname.isEmpty() || current.housenumber.isEmpty()) {
-            onDoneChecking(current, inputStatus.FIELDSEMPTY);
-            return;
+            showEmptyErrors();
+            return inputStatus.FIELDSEMPTY;
         }
-        
-        if (inputMode == NEW || (inputMode == EDIT && !edit_supplier.getName().equals(current.name))) {
-            supplierHelper.find(current.name, result -> {
-                if (result == null)
-                    onDoneChecking(current, inputStatus.OK);
-                else
-                    onDoneChecking(current, result.getSupplierID());
-            });
-            return;
-        }
-        onDoneChecking(current, inputStatus.OK);
+        return inputStatus.OK;
     }
 
     private void showEmptyErrors() {
@@ -146,37 +140,47 @@ public class SupplierEditActivity extends AppCompatActivity {
             housenumber.setError("This field must be filled");
     }
 
-    private void onDoneChecking(ui_supplier input, inputStatus state) {
-        switch (state) {
-            case OK: {
-                supplierHelper.insert(input, result -> {
-                    activityFinish(INSERTED, input.to_supplier(result));
-                });
-                break;
-            }
-            case FIELDSEMPTY: showEmptyErrors(); break;
+    private boolean nameChanged() {
+        return edit_supplier != null && !edit_supplier.getName().equals(name.getText().toString());
+    }
+
+    private void storeSupplier(ui_supplier input) {
+        if (inputMode == NEW) {
+            resultStatus = INSERTED;
+            supplierNewPolicy n = new supplierNewPolicy(this, supplierHelper);
+            n.insert(input);
+        } else if (inputMode == EDIT && nameChanged()) {
+            //TODO: apply edit flowgraph
         }
     }
 
-    private void onDoneChecking(ui_supplier input, long supplierID) {
+    private void store_forceSupplier(supplier input) {
+        if (inputMode == NEW) {
+            resultStatus = OVERRIDE; //TODO: does this work on UI?
+            supplierNewPolicy n = new supplierNewPolicy(this, supplierHelper);
+            n.insert_force(input);
+        } else {
+            //TODO: apply edit flowgraph
+        }
+    }
+
+    @Override
+    public void onConflict(supplier entity, supplier conflictEntity) {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
         alertBuilder.setTitle("Overwrite");
-        alertBuilder.setMessage(input.name + " already exists. Overwrite?");
-        alertBuilder.setPositiveButton("Yes", (dialog, which) -> {
-            supplierHelper.update(supplierID, input, result -> {
-                activityFinish(OVERRIDE, input.to_supplier(supplierID));
-            });
-        });
+        alertBuilder.setMessage(conflictEntity.getName() + " already exists. Overwrite?");
+        alertBuilder.setPositiveButton("Yes", (dialog, which) -> store_forceSupplier(entity));
         alertBuilder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
         alertBuilder.create().show();
     }
 
-    private void activityFinish(int resultCode, supplier supplier) {
+    @Override
+    public void onSuccess(long insertedEntityID) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable("result", supplier);
+        bundle.putParcelable("result", getSupplier().to_supplier(insertedEntityID));
         Intent intent = new Intent();
         intent.putExtras(bundle);
-        setResult(resultCode, intent);
+        setResult(resultStatus, intent);
         finish();
     }
 
@@ -187,7 +191,9 @@ public class SupplierEditActivity extends AppCompatActivity {
                 finish();
                 break;
             case R.id.edit_menu_done:
-                checkInput();
+                if (checkInput() == inputStatus.OK) {
+                    storeSupplier(getSupplier());
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -197,5 +203,11 @@ public class SupplierEditActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.edit_menu, menu);
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        manager.cancelAllWorking();
+        super.onDestroy();
     }
 }

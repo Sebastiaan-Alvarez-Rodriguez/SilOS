@@ -53,12 +53,7 @@ public class supplier_productHelper extends helper<supplier_product> {
     }
 
     public void update(long productID, Set<supplier> suppliersBefore, Set<supplier> suppliersAfter, DbAsyncInterface<Void> async) {
-        Set<supplier> removedRelations = new HashSet<>(), addedRelations = new HashSet<>();
-//        for (supplier s : suppliersAfter) {
-//            //if supplier was not checked but now is, it is added
-//            if (!suppliersBefore.contains(s))
-//                addedRelations.add(s);
-//        } NO NEED SINCE CONFLICTSTRATEGY IS IGNORE, SO EVERYTHING CAN BE ADDED
+        Set<supplier> removedRelations = new HashSet<>();
 
         for (supplier s : suppliersBefore) {
             //if supplier was checked but now is not, it is removed

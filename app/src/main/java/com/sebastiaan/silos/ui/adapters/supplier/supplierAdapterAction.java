@@ -8,7 +8,8 @@ import android.view.ViewGroup;
 import com.sebastiaan.silos.R;
 import com.sebastiaan.silos.db.entities.supplier;
 import com.sebastiaan.silos.ui.adapters.actionAdapter;
-import com.sebastiaan.silos.ui.adapters.actionCallback;
+import com.sebastiaan.silos.ui.adapters.interfaces.actionCallback;
+import com.sebastiaan.silos.ui.adapters.interfaces.clickCallback;
 import com.sebastiaan.silos.ui.adapters.viewholders.supplier.supplierActionViewHolder;
 
 import java.util.List;
@@ -16,10 +17,11 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+
 public class supplierAdapterAction extends actionAdapter<supplierActionViewHolder, supplier> {
 
-    public supplierAdapterAction(List<supplier> list, actionCallback<supplier> callback) {
-        super(list, callback);
+    public supplierAdapterAction(List<supplier> list, clickCallback<supplier> clickCallback, actionCallback actionCallback) {
+        super(list, clickCallback, actionCallback);
     }
 
     @Override
@@ -31,7 +33,8 @@ public class supplierAdapterAction extends actionAdapter<supplierActionViewHolde
             selectedItems.remove(itempos);
             layout.setBackgroundColor(Color.TRANSPARENT);
             if (selectedItems.isEmpty())
-                callback.onEmptyItemSelection();
+                if (actionCallback != null)
+                    actionCallback.onEmptyItemSelection();
         }
     }
 

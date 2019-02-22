@@ -4,14 +4,13 @@ import android.content.Context;
 
 import com.sebastiaan.silos.db.async.DbAsyncInterface;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
-import com.sebastiaan.silos.db.async.task.find.supplierFindTask;
 import com.sebastiaan.silos.db.async.task.getAll.supplierGetAllTask;
 import com.sebastiaan.silos.db.entities.supplier;
 import com.sebastiaan.silos.ui.entities.ui_supplier;
 
 import java.util.List;
 
-public class supplierHelper extends helper<supplier> {
+public class supplierHelper extends helperNamed<supplier> {
 
     public supplierHelper(AsyncManager manager, Context context) {
         super(manager, context);
@@ -33,11 +32,6 @@ public class supplierHelper extends helper<supplier> {
 
     public void getAll(DbAsyncInterface<List<supplier>> onFinish) {
         supplierGetAllTask task = new supplierGetAllTask(manager, context);
-        task.setCallback(onFinish).execute();
-    }
-
-    public void find(String name, DbAsyncInterface<supplier> onFinish) {
-        supplierFindTask task = new supplierFindTask(manager, context, name);
         task.setCallback(onFinish).execute();
     }
 }
