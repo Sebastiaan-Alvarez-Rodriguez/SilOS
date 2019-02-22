@@ -16,6 +16,8 @@ public class barcodeBaseViewHolder extends baseViewHolder<barcode> {
 
     private TextView barcode_string, barcode_amount;
 
+    private long productID = -1;
+
     public barcodeBaseViewHolder(@NonNull View itemView) {
         super(itemView);
         barcode_string = itemView.findViewById(R.id.barcode_list_string);
@@ -28,10 +30,11 @@ public class barcodeBaseViewHolder extends baseViewHolder<barcode> {
         Log.e("TESTTTT", "barcode_string in barcodeBaseViewholder is " + (barcode_string == null ? "null" : "not null"));
         barcode_string.setText(barcode.getBarcodeString());
         barcode_amount.setText(String.valueOf(barcode.getAmount()));
+        productID = barcode.getProductID();
     }
 
     @Override
     public barcode get() {
-        return new barcode(barcode_string.getText().toString(), Integer.valueOf(barcode_amount.getText().toString()));
+        return new barcode(barcode_string.getText().toString(), productID, Integer.valueOf(barcode_amount.getText().toString()));
     }
 }

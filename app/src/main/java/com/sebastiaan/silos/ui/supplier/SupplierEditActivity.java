@@ -43,6 +43,8 @@ public class SupplierEditActivity extends AppCompatActivity implements DbPolicyI
     private EditText email;
     private EditText webaddress;
 
+    private int resultStatus = CANCELED;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -144,17 +146,17 @@ public class SupplierEditActivity extends AppCompatActivity implements DbPolicyI
 
     private void storeSupplier(ui_supplier input) {
         if (inputMode == NEW) {
-            setResult(INSERTED);
+            resultStatus = INSERTED;
             supplierNewPolicy n = new supplierNewPolicy(this, supplierHelper);
             n.insert(input);
-        } else if (inputMode == EDIT && nameChanged()){
+        } else if (inputMode == EDIT && nameChanged()) {
             //TODO: apply edit flowgraph
         }
     }
 
     private void store_forceSupplier(supplier input) {
         if (inputMode == NEW) {
-            setResult(OVERRIDE); //TODO: does this work on UI?
+            resultStatus = OVERRIDE; //TODO: does this work on UI?
             supplierNewPolicy n = new supplierNewPolicy(this, supplierHelper);
             n.insert_force(input);
         } else {
@@ -178,7 +180,7 @@ public class SupplierEditActivity extends AppCompatActivity implements DbPolicyI
         bundle.putParcelable("result", getSupplier().to_supplier(insertedEntityID));
         Intent intent = new Intent();
         intent.putExtras(bundle);
-        setResult(intent);
+        setResult(resultStatus, intent);
         finish();
     }
 

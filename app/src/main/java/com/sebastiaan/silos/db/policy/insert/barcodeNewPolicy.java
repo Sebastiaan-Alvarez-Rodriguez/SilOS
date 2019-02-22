@@ -4,6 +4,7 @@ import com.sebastiaan.silos.db.async.helper.barcodeHelper;
 import com.sebastiaan.silos.db.entities.barcode;
 import com.sebastiaan.silos.db.policy.DbPolicyConflictInterface;
 import com.sebastiaan.silos.db.policy.DbPolicyInterface;
+import com.sebastiaan.silos.ui.entities.ui_barcode;
 
 public class barcodeNewPolicy extends newPolicy<barcode> {
     public barcodeHelper helper;
@@ -12,15 +13,8 @@ public class barcodeNewPolicy extends newPolicy<barcode> {
         super(policyInterface, helper);
     }
 
-    @Override
-    public void insert(barcode entity) {
-        helper.find(entity.getBarcodeString(), conflictEntity -> {
-            if (conflictEntity == null) {
-                helper.insert(entity, resultEntity -> policyInterface.onSuccess(resultEntity));
-            } else {
-                policyInterface.onConflict(conflictEntity);
-            }
-        });
+    public void insert(ui_barcode input, long productID) {
+        insert(new barcode(input.barcodeString, productID, input.amount));
     }
 
     @Override

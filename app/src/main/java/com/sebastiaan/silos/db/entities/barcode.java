@@ -27,8 +27,9 @@ public class barcode extends DbEntity<barcode> implements Parcelable {
 
     private int amount;
 
-    public barcode(@NonNull String barcodeString, int amount) {
+    public barcode(@NonNull String barcodeString, long productID, int amount) {
         this.barcodeString = barcodeString;
+        this.productID = productID;
         this.amount = amount;
     }
 

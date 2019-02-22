@@ -8,12 +8,15 @@ import android.widget.EditText;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.sebastiaan.silos.R;
+import com.sebastiaan.silos.db.async.DbAsyncInterface;
 import com.sebastiaan.silos.db.async.helper.productHelper;
 import com.sebastiaan.silos.db.async.helper.supplierHelper;
 import com.sebastiaan.silos.db.async.helper.supplier_productHelper;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.entities.product;
 import com.sebastiaan.silos.db.entities.supplier;
+import com.sebastiaan.silos.db.policy.DbPolicyInterface;
+import com.sebastiaan.silos.db.policy.insert.productNewPolicy;
 import com.sebastiaan.silos.ui.adapters.supplier.supplierAdapterCheckable;
 import com.sebastiaan.silos.ui.entities.ui_product;
 import com.sebastiaan.silos.ui.inputMode;
@@ -33,14 +36,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.sebastiaan.silos.ui.inputMode.EDIT;
 import static com.sebastiaan.silos.ui.inputMode.NEW;
+import static com.sebastiaan.silos.ui.resultCodes.CANCELED;
 import static com.sebastiaan.silos.ui.resultCodes.INSERTED;
 import static com.sebastiaan.silos.ui.resultCodes.OVERRIDE;
 
-public class ProductEditActivity extends AppCompatActivity {
+public class ProductEditActivity extends AppCompatActivity implements DbPolicyInterface<product> {
     private AsyncManager manager;
 
-    private EditText productNameText;
-    private EditText productDescriptionText;
+    private EditText name;
+    private EditText description;
     private RecyclerView supplierlist;
 
     private supplierAdapterCheckable supplierAdapter;
@@ -54,12 +58,13 @@ public class ProductEditActivity extends AppCompatActivity {
     private supplierHelper supplierHelper;
     private supplier_productHelper supplier_productHelper;
 
+    private int resultStatus = CANCELED;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         prepareAscync();
         setContentView(R.layout.activity_product_edit);
-        setResult(RESULT_CANCELED);
+        setResult(CANCELED);
         findGlobalViews();
 
         Bundle bundle = getIntent().getExtras();
@@ -99,13 +104,13 @@ public class ProductEditActivity extends AppCompatActivity {
     }
 
     private void findGlobalViews() {
-        productNameText = findViewById(R.id.product_edit_name);
-        productDescriptionText = findViewById(R.id.product_edit_description);
+        name = findViewById(R.id.product_edit_name);
+        description = findViewById(R.id.product_edit_description);
         supplierlist = findViewById(R.id.product_edit_supplierslist);
     }
 
     private void setupActionBar() {
-        Toolbar myToolbar = findViewById(R.id.barcode_edit_toolbar);
+        Toolbar myToolbar = findViewById(R.id.product_edit_toolbar);
         setSupportActionBar(myToolbar);
         ActionBar actionbar = getSupportActionBar();
         if (actionbar != null) {
@@ -114,39 +119,30 @@ public class ProductEditActivity extends AppCompatActivity {
     }
 
     private void setProduct(product product) {
-        productNameText.setText(product.getName());
-        productDescriptionText.setText(product.getProductDescription());
+        name.setText(product.getName());
+        description.setText(product.getProductDescription());
     }
 
     private ui_product getProduct() {
-        return new ui_product(productNameText.getText().toString(), productDescriptionText.getText().toString());
+        return new ui_product(name.getText().toString(), description.getText().toString());
     }
 
-    private void checkInput() {
+    private inputStatus checkInput() {
         ui_product current = getProduct();
         if (current.productname.isEmpty() || current.description.isEmpty() || supplierAdapter.getSelectedItemCount() == 0) {
-            onDoneChecking(current, inputStatus.FIELDSEMPTY);
-            return;
+            showEmptyErrors();
+            return inputStatus.FIELDSEMPTY;
         }
-        //check for override issues when new product is done or when existing product changed name
-        if (inputMode == NEW || (inputMode == EDIT && !edit_product.getName().equals(current.productname))) {
-            productHelper.findByNameExact(new product("",""), current.productname, result -> {
-                if (result == null)
-                    onDoneChecking(current, inputStatus.OK);
-                else
-                    onDoneChecking(current, result.getProductID());
-            });
-            return;
-        }
-        onDoneChecking(current, inputStatus.OK);
+        return inputStatus.OK;
     }
 
-    private void showEmptyErrors(ui_product current) {
+    private void showEmptyErrors() {
+        ui_product current = getProduct();
         if (current.productname.isEmpty())
-            productNameText.setError("This field must be filled");
+            name.setError("This field must be filled");
 
         if (current.description.isEmpty())
-            productDescriptionText.setError("This field must be filled");
+            description.setError("This field must be filled");
 
         if (supplierAdapter.getSelectedItemCount() == 0) {
             Snackbar snackbar = Snackbar.make(findViewById(R.id.product_edit_layout),"Give at least 1 supplier", Snackbar.LENGTH_LONG);
@@ -154,36 +150,64 @@ public class ProductEditActivity extends AppCompatActivity {
         }
     }
 
-    private void onDoneChecking(ui_product current, inputStatus state) {
-        switch (state) {
-            case OK:
-                if (inputMode == NEW)
-                    insertProduct(current);
-                else
-                    overrideProduct(current, edit_product.getProductID());
-                break;
-            case FIELDSEMPTY: showEmptyErrors(current); break;
+    private boolean nameChanged() {
+        return edit_product != null && !edit_product.getName().equals(name.getText().toString());
+    }
+
+    private void storeProduct(ui_product input) {
+        if (inputMode == NEW) {
+            resultStatus = INSERTED;
+            productNewPolicy n = new productNewPolicy(this, productHelper);
+            n.insert(input);
+        } else if (inputMode == EDIT && nameChanged()) {
+            //TODO: apply edit flowgraph
         }
     }
 
-    private void onDoneChecking(ui_product current, long conflictID) {
+    private void store_forceProduct(product input) {
+        if (inputMode == NEW) {
+            resultStatus = INSERTED;
+            productNewPolicy n = new productNewPolicy(this, productHelper);
+            n.insert_force(input);
+        }
+    }
+
+    private void store_SupplierProducts(Set<supplier> selected, long productID, DbAsyncInterface<long[]> onFinish) {
+        if (inputMode == NEW) {
+            resultStatus = OVERRIDE; //TODO: does this work in UI?
+            supplier_productHelper.insert(productID, selected, onFinish);
+//            activityFinish(INSERTED, input.to_product(productID));
+        }
+    }
+
+    @Override
+    public void onConflict(product entity, product conflictEntity) {
+        //TODO: product_supplier relations
+        //AND: edit situation
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
         alertBuilder.setTitle("Overwrite");//TODO: use string resources
-        alertBuilder.setMessage(current.productname + " already exists. Overwrite?");
-        alertBuilder.setPositiveButton("Yes", (dialog, which) -> overrideProduct(current, conflictID));
+        alertBuilder.setMessage(entity.getName() + " already exists. Overwrite?");
+        alertBuilder.setPositiveButton("Yes", (dialog, which) -> store_forceProduct(entity));
         alertBuilder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
         alertBuilder.create().show();
     }
 
-    private void insertProduct(ui_product input) {
-        productHelper.insert(input, result -> {
-            insertRelations(result, input);
+    @Override
+    public void onSuccess(long insertedEntityID) {
+        //TODO: product_supplier relations
+        store_SupplierProducts(supplierAdapter.getSelectedItems(), insertedEntityID, resultIDs -> {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("result", getProduct().to_product(insertedEntityID));
+            Intent intent = new Intent();
+            intent.putExtras(bundle);
+            setResult(resultStatus, intent);
+            finish();
         });
     }
 
     private void insertRelations(long productID, ui_product input) {
         supplier_productHelper.insert(productID, supplierAdapter.getSelectedItems(), result -> {
-            activityFinish(INSERTED, input.to_product(productID));
+//            activityFinish(INSERTED, input.to_product(productID));
         });
     }
 
@@ -195,18 +219,10 @@ public class ProductEditActivity extends AppCompatActivity {
 
     private void updateRelations(ui_product input, long productID, Set<supplier> suppliers) {
         supplier_productHelper.update(productID, edit_suppliers, suppliers, result -> {
-            activityFinish(OVERRIDE, input.to_product(productID));
+//            activityFinish(OVERRIDE, input.to_product(productID));
         });
     }
 
-    private void activityFinish(int resultCode, product product) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("result", product);
-        Intent intent = new Intent();
-        intent.putExtras(bundle);
-        setResult(resultCode, intent);
-        finish();
-    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -214,7 +230,9 @@ public class ProductEditActivity extends AppCompatActivity {
                 finish();
                 break;
             case R.id.edit_menu_done:
-                checkInput();
+                if (checkInput() == inputStatus.OK) {
+                    storeProduct(getProduct());
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
