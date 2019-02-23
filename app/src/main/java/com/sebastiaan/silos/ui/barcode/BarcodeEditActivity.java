@@ -14,8 +14,8 @@ import com.sebastiaan.silos.db.async.helper.productHelper;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.entities.barcode;
 import com.sebastiaan.silos.db.entities.product;
-import com.sebastiaan.silos.db.policy.DbPolicyInterface;
-import com.sebastiaan.silos.db.policy.insert.barcodeNewPolicy;
+import com.sebastiaan.silos.db.policy.interfaces.DbPolicyInterface;
+import com.sebastiaan.silos.db.policy.BarcodePolicy;
 import com.sebastiaan.silos.ui.entities.ui_barcode;
 import com.sebastiaan.silos.ui.inputMode;
 import com.sebastiaan.silos.ui.inputStatus;
@@ -139,18 +139,24 @@ public class BarcodeEditActivity extends AppCompatActivity implements DbPolicyIn
     }
 
     private void storeBarcode(ui_barcode input) {
+        BarcodePolicy n = new BarcodePolicy(this, barcodeHelper);
         if (inputMode == NEW) {
             resultStatus = INSERTED;
-            barcodeNewPolicy n = new barcodeNewPolicy(this, barcodeHelper);
             n.insert(input, product.getId());
+        } else if (inputMode == EDIT) {
+            resultStatus = OVERRIDE;
+            n.update(input.to_barcode(edit_barcode.getId()));
         }
     }
 
     private void store_forceBarcode(barcode input) {
+        BarcodePolicy n = new BarcodePolicy(this, barcodeHelper);
         if (inputMode == NEW) {
             resultStatus = OVERRIDE; //TODO: does this work on UI?
-            barcodeNewPolicy n = new barcodeNewPolicy(this, barcodeHelper);
             n.insert_force(input);
+        } else if (inputMode == EDIT){
+            resultStatus = OVERRIDE;
+            n.update_force(input);
         }
     }
 

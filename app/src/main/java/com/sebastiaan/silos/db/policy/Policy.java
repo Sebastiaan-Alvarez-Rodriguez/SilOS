@@ -1,17 +1,17 @@
-package com.sebastiaan.silos.db.policy.insert;
+package com.sebastiaan.silos.db.policy;
 
 import com.sebastiaan.silos.db.async.helper.helper;
 import com.sebastiaan.silos.db.entities.DbEntity;
-import com.sebastiaan.silos.db.policy.DbPolicyConflictInterface;
-import com.sebastiaan.silos.db.policy.DbPolicyInterface;
+import com.sebastiaan.silos.db.policy.interfaces.DbPolicyConflictInterface;
+import com.sebastiaan.silos.db.policy.interfaces.DbPolicyInterface;
 
 import androidx.annotation.NonNull;
 
-public abstract class newPolicy<T extends DbEntity<T>> {
+abstract class Policy<T extends DbEntity<T>> {
     protected DbPolicyInterface<T> policyInterface;
     protected helper<T> helper;
 
-    public newPolicy(@NonNull DbPolicyInterface<T> policyInterface, helper<T> helper) {
+    Policy(@NonNull DbPolicyInterface<T> policyInterface, helper<T> helper) {
         this.policyInterface = policyInterface;
         this.helper = helper;
     }

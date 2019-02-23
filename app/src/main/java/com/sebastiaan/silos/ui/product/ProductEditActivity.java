@@ -15,8 +15,8 @@ import com.sebastiaan.silos.db.async.helper.supplier_productHelper;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.entities.product;
 import com.sebastiaan.silos.db.entities.supplier;
-import com.sebastiaan.silos.db.policy.DbPolicyInterface;
-import com.sebastiaan.silos.db.policy.insert.productNewPolicy;
+import com.sebastiaan.silos.db.policy.interfaces.DbPolicyInterface;
+import com.sebastiaan.silos.db.policy.ProductPolicy;
 import com.sebastiaan.silos.ui.adapters.supplier.supplierAdapterCheckable;
 import com.sebastiaan.silos.ui.entities.ui_product;
 import com.sebastiaan.silos.ui.inputMode;
@@ -38,6 +38,7 @@ import static com.sebastiaan.silos.ui.inputMode.EDIT;
 import static com.sebastiaan.silos.ui.inputMode.NEW;
 import static com.sebastiaan.silos.ui.resultCodes.CANCELED;
 import static com.sebastiaan.silos.ui.resultCodes.INSERTED;
+import static com.sebastiaan.silos.ui.resultCodes.OVERRIDE;
 
 public class ProductEditActivity extends AppCompatActivity implements DbPolicyInterface<product> {
     private AsyncManager manager;
@@ -154,28 +155,31 @@ public class ProductEditActivity extends AppCompatActivity implements DbPolicyIn
     }
 
     private void storeProduct(ui_product input) {
+        ProductPolicy n = new ProductPolicy(this, productHelper);
         if (inputMode == NEW) {
             resultStatus = INSERTED;
-            productNewPolicy n = new productNewPolicy(this, productHelper);
             n.insert(input);
-        } else if (inputMode == EDIT && nameChanged()) {
-            //TODO: apply edit flowgraph
+        } else if (inputMode == EDIT) {
+            resultStatus = OVERRIDE;
+            n.update(input.to_product(edit_product.getId()));
         }
     }
 
     private void store_forceProduct(product input) {
+        ProductPolicy n = new ProductPolicy(this, productHelper);
         if (inputMode == NEW) {
             resultStatus = INSERTED;
-            productNewPolicy n = new productNewPolicy(this, productHelper);
             n.insert_force(input);
+        } else if (inputMode == EDIT) {
+            resultStatus = OVERRIDE;
+            n.update_force(input);
         }
     }
 
     private void store_SupplierProducts(Set<supplier> selected, long productID, DbAsyncInterface<long[]> onFinish) {
-        if (inputMode == NEW) {
+//        if (inputMode == NEW) {
             supplier_productHelper.insert(productID, selected, onFinish);
-//            activityFinish(INSERTED, input.to_product(productID));
-        }
+//        }
     }
 
     @Override

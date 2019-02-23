@@ -10,8 +10,8 @@ import com.sebastiaan.silos.R;
 import com.sebastiaan.silos.db.async.helper.supplierHelper;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.entities.supplier;
-import com.sebastiaan.silos.db.policy.DbPolicyInterface;
-import com.sebastiaan.silos.db.policy.insert.supplierNewPolicy;
+import com.sebastiaan.silos.db.policy.interfaces.DbPolicyInterface;
+import com.sebastiaan.silos.db.policy.SupplierPolicy;
 import com.sebastiaan.silos.ui.entities.ui_supplier;
 import com.sebastiaan.silos.ui.inputMode;
 import com.sebastiaan.silos.ui.inputStatus;
@@ -145,21 +145,24 @@ public class SupplierEditActivity extends AppCompatActivity implements DbPolicyI
     }
 
     private void storeSupplier(ui_supplier input) {
+        SupplierPolicy n = new SupplierPolicy(this, supplierHelper);
         if (inputMode == NEW) {
             resultStatus = INSERTED;
-            supplierNewPolicy n = new supplierNewPolicy(this, supplierHelper);
             n.insert(input);
-        } else if (inputMode == EDIT && nameChanged()) {
-            //TODO: apply edit flowgraph
+        } else if (inputMode == EDIT) {
+            resultStatus = OVERRIDE;//TODO: does this work on UI?
+            n.update(input.to_supplier(edit_supplier.getId()));
         }
     }
 
     private void store_forceSupplier(supplier input) {
+        SupplierPolicy n = new SupplierPolicy(this, supplierHelper);
         if (inputMode == NEW) {
             resultStatus = OVERRIDE; //TODO: does this work on UI?
-            supplierNewPolicy n = new supplierNewPolicy(this, supplierHelper);
             n.insert_force(input);
-        } else {
+        } else if (inputMode == EDIT) {
+            resultStatus = OVERRIDE;
+            n.update_force(input);
             //TODO: apply edit flowgraph
         }
     }
@@ -168,7 +171,7 @@ public class SupplierEditActivity extends AppCompatActivity implements DbPolicyI
     public void onConflict(supplier entity, supplier conflictEntity) {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
         alertBuilder.setTitle("Overwrite");
-        alertBuilder.setMessage(conflictEntity.getName() + " already exists. Overwrite?");
+        alertBuilder.setMessage("Supplier " + conflictEntity.getName() + " already exists. Overwrite?");
         alertBuilder.setPositiveButton("Yes", (dialog, which) -> store_forceSupplier(entity));
         alertBuilder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
         alertBuilder.create().show();
