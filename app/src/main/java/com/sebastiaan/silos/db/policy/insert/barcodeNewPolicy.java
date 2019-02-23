@@ -17,8 +17,16 @@ public class barcodeNewPolicy extends newPolicy<barcode> {
         insert(new barcode(input.barcodeString, productID, input.amount));
     }
 
+    /**
+     * Determine if barcode X has a conflict.
+     * It has a conflict, if there is a barcode Y such that x.id != y.id and x.barcodeString == y.barcodeString
+     * @param entity Entity to check
+     * @param result confilictCallback. Gets conflicting entity if any, null otherwise
+     */
     @Override
     public void determineConflict(barcode entity, DbPolicyConflictInterface<barcode> result) {
-        helper.find(entity.getBarcodeString(), result::onConflict);
+        helper.find(entity.getBarcodeString(), conflictEntity -> {
+            result.onConflict(conflictEntity.getId() == entity.getId() ? null : conflictEntity);
+        });
     }
 }

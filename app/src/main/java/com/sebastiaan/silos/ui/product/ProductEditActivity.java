@@ -38,7 +38,6 @@ import static com.sebastiaan.silos.ui.inputMode.EDIT;
 import static com.sebastiaan.silos.ui.inputMode.NEW;
 import static com.sebastiaan.silos.ui.resultCodes.CANCELED;
 import static com.sebastiaan.silos.ui.resultCodes.INSERTED;
-import static com.sebastiaan.silos.ui.resultCodes.OVERRIDE;
 
 public class ProductEditActivity extends AppCompatActivity implements DbPolicyInterface<product> {
     private AsyncManager manager;
@@ -174,7 +173,6 @@ public class ProductEditActivity extends AppCompatActivity implements DbPolicyIn
 
     private void store_SupplierProducts(Set<supplier> selected, long productID, DbAsyncInterface<long[]> onFinish) {
         if (inputMode == NEW) {
-            resultStatus = OVERRIDE; //TODO: does this work in UI?
             supplier_productHelper.insert(productID, selected, onFinish);
 //            activityFinish(INSERTED, input.to_product(productID));
         }

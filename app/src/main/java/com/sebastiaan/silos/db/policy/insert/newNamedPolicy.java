@@ -14,8 +14,14 @@ public class newNamedPolicy<T extends DbEntityNamed<T>> extends newPolicy<T> {
         super(policyInterface, helper);
     }
 
+    /**
+     * Determine if named entity X has a conflict.
+     * It has a conflict, if there is an entity Y such that x.id != y.id and x.name == y.name
+     * @param entity Entity to check
+     * @param result confilictCallback. Gets conflicting entity if any, null otherwise
+     */
     @Override
     public void determineConflict(T entity, DbPolicyConflictInterface<T> result) {
-        helper.findByNameExact(entity, entity.getName(), result::onConflict);
+        helper.findByNameExact(entity, entity.getName(), conflictEntity -> result.onConflict(conflictEntity.getId() == entity.getId() ? null : conflictEntity));
     }
 }
