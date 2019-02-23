@@ -175,9 +175,9 @@ public class SupplierEditActivity extends AppCompatActivity implements DbPolicyI
     }
 
     @Override
-    public void onSuccess(long insertedEntityID) {
+    public void onSuccess(supplier entity) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable("result", getSupplier().to_supplier(insertedEntityID));
+        bundle.putParcelable("result", entity);
         Intent intent = new Intent();
         intent.putExtras(bundle);
         setResult(resultStatus, intent);

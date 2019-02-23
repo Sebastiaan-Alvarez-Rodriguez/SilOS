@@ -172,7 +172,7 @@ public class ProductsActivity extends AppCompatActivity implements ActionMode.Ca
             Bundle bundle = new Bundle();
             bundle.putParcelable("product_parcel", object);
 
-            supplier_productHelper.getForProduct(object.getProductID(), result -> {
+            supplier_productHelper.getForProduct(object.getId(), result -> {
                 Log.e("TEST", "found relations: " + result.size());
                 bundle.putParcelableArrayList("suppliers_parcel", new ArrayList<>(result));
                 editIntent.putExtras(bundle);

@@ -22,7 +22,7 @@ public class productHelper extends helperNamed<product> {
 
     public void update(long productID, ui_product product, DbAsyncInterface<Void> onFinish) {
         product p = new product(product.productname, product.description);
-        p.setProductID(productID);
+        p.setId(productID);
         update(p, onFinish);
     }
 

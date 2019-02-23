@@ -76,7 +76,7 @@ public class productBaseViewHolder extends baseViewHolder<product> {
 
     @Override
     public void set(product product) {
-        id = product.getProductID();
+        id = product.getId();
         productName.setText(product.getName());
         productDescription.setText(product.getProductDescription());
     }

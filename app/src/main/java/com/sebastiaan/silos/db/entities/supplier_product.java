@@ -10,7 +10,6 @@ import com.sebastiaan.silos.db.interfaces.DbIDInterface;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
-import androidx.room.PrimaryKey;
 
 import static androidx.room.ForeignKey.CASCADE;
 
@@ -24,8 +23,7 @@ import static androidx.room.ForeignKey.CASCADE;
  */
 @Entity(indices = {@Index(value = {"supplierID", "productID"}, unique = true)})
 public class supplier_product extends DbEntity<supplier_product> implements Parcelable {
-    @PrimaryKey
-    private long supplier_productID;
+
 
     @ForeignKey(entity = supplier.class, parentColumns = "supplierID", childColumns = "supplierID",  onDelete = CASCADE)
     private long supplierID;
@@ -38,6 +36,7 @@ public class supplier_product extends DbEntity<supplier_product> implements Parc
     }
 
     private supplier_product(Parcel in) {
+        id = in.readLong();
         supplierID = in.readLong();
         productID = in.readLong();
     }
@@ -53,14 +52,6 @@ public class supplier_product extends DbEntity<supplier_product> implements Parc
             return new supplier_product[size];
         }
     };
-
-    public long getSupplier_productID() {
-        return supplier_productID;
-    }
-
-    public void setSupplier_productID(long supplier_productID) {
-        this.supplier_productID = supplier_productID;
-    }
 
     public long getSupplierID() {
         return supplierID;
@@ -85,6 +76,7 @@ public class supplier_product extends DbEntity<supplier_product> implements Parc
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
         dest.writeLong(supplierID);
         dest.writeLong(productID);
     }

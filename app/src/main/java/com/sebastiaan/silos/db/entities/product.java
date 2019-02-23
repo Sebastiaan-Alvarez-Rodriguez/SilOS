@@ -10,12 +10,9 @@ import com.sebastiaan.silos.db.interfaces.DbNamedInterface;
 import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.Index;
-import androidx.room.PrimaryKey;
 
 @Entity(indices = {@Index(value = {"name"}, unique = true)})
 public class product extends DbEntityNamed<product> implements Parcelable {
-    @PrimaryKey(autoGenerate = true)
-    private long productID;
     private String productDescription;
 
     public product(String name, String productDescription) {
@@ -25,7 +22,7 @@ public class product extends DbEntityNamed<product> implements Parcelable {
 
     protected product(Parcel in) {
         super(null);
-        productID = in.readLong();
+        id = in.readLong();
         name = in.readString();
         productDescription = in.readString();
     }
@@ -42,14 +39,6 @@ public class product extends DbEntityNamed<product> implements Parcelable {
         }
     };
 
-    public long getProductID() {
-        return productID;
-    }
-
-    public void setProductID(long productID) {
-        this.productID = productID;
-    }
-
     public String getProductDescription() {
         return productDescription;
     }
@@ -64,7 +53,7 @@ public class product extends DbEntityNamed<product> implements Parcelable {
             return false;
         }
         product other = (product) obj;
-        return this.productID == other.productID;
+        return this.id == other.id;
     }
 
     @Override
@@ -74,7 +63,7 @@ public class product extends DbEntityNamed<product> implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(productID);
+        dest.writeLong(id);
         dest.writeString(name);
         dest.writeString(productDescription);
     }

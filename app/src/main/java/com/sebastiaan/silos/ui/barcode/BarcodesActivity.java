@@ -68,7 +68,7 @@ public class BarcodesActivity extends AppCompatActivity implements ActionMode.Ca
 
     private void prepareList() {
         RecyclerView productList = findViewById(R.id.activity_list_list);
-        barcodeHelper.getAll(product.getProductID(), result -> {
+        barcodeHelper.getAll(product.getId(), result -> {
             productList.setLayoutManager(new LinearLayoutManager(this));
             adapter = new barcodeAdapterAction(result, this, this);
             adapter.setSelectedColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));

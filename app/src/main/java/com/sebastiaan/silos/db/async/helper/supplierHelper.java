@@ -21,8 +21,7 @@ public class supplierHelper extends helperNamed<supplier> {
     }
 
     public void update(long supplierID, ui_supplier input, DbAsyncInterface<Void> onFinish) {
-        supplier s = new supplier(input.name, input.streetname, input.housenumber, input.city, input.postalcode, input.phonenumber, input.emailaddress, input.website);
-        s.setSupplierID(supplierID);
+        supplier s = input.to_supplier(supplierID);
         update(s, onFinish);
     }
 

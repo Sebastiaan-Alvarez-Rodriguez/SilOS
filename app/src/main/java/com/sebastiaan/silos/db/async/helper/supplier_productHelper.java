@@ -27,7 +27,7 @@ public class supplier_productHelper extends helper<supplier_product> {
         Set<supplier_product> relations = new HashSet<>();
 
         for (supplier supplier : suppliers)
-            relations.add(new supplier_product(supplier.getSupplierID(), productID));
+            relations.add(new supplier_product(supplier.getId(), productID));
 
         return relations.toArray(new supplier_product[0]);
     }

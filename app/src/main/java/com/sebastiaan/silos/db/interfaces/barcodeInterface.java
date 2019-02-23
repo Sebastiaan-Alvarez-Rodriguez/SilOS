@@ -10,10 +10,10 @@ import androidx.room.Query;
 
 @Dao
 public interface barcodeInterface extends DbIDInterface<barcode> {
-    @Query("SELECT product.* FROM product, barcode WHERE product.productID = barcode.productID AND barcode.barcodeString = :code")
+    @Query("SELECT product.* FROM product, barcode WHERE product.id = barcode.productID AND barcode.barcodeString = :code")
     product findProductByBarcode(String code);
 
-    @Query("SELECT * FROM barcode WHERE barcodeID = :id")
+    @Query("SELECT * FROM barcode WHERE id = :id")
     barcode findByID(long id);
 
     @Query("SELECT * FROM barcode WHERE productID = :productID")

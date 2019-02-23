@@ -12,7 +12,7 @@ import androidx.room.Query;
 
 @Dao
 public interface supplier_productInterface extends DbIDInterface<supplier_product> {
-    @Query("SELECT supplier.* FROM supplier_product, supplier WHERE supplier_product.supplierID = supplier.supplierID AND supplier_product.productID = :productID")
+    @Query("SELECT supplier.* FROM supplier_product, supplier WHERE supplier_product.supplierID = supplier.id AND supplier_product.productID = :productID")
     List<supplier> findSuppliersForProduct(long productID);
 
     @Query("SELECT * FROM supplier_product WHERE supplierID=:id")

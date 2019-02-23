@@ -10,15 +10,9 @@ public class ui_product extends UiEntity {
         this.description = description;
     }
 
-    public product to_product(int productID) {
-        product p = new product(productname, description);
-        p.setProductID(productID);
-        return p;
-    }
-
     public product to_product(long productID) {
         product p = new product(productname, description);
-        p.setProductID(productID);
+        p.setId(productID);
         return p;
     }
 }

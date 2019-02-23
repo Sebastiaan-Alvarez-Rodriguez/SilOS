@@ -19,11 +19,20 @@ public abstract class newPolicy<T extends DbEntity<T>> {
     public void insert(T entity) {
         determineConflict(entity, conflictEntity -> {
             if (conflictEntity == null) {
-                helper.insert(entity, resultEntityID -> policyInterface.onSuccess(resultEntityID));
-                //TODO: possible to insert. Call policyInterface onsuccess
+                helper.insert(entity, resultEntityID -> {
+                    entity.setId(resultEntityID);
+                    policyInterface.onSuccess(entity);
+                });
             } else {
                 policyInterface.onConflict(entity, conflictEntity);
-                //TODO: not possible to insert. Call policyInterface onconflict
+            }
+        });
+    }
+
+    public void update(T entity) {
+        determineConflict(entity, conflictEntity -> {
+            if (conflictEntity == null) {
+                helper.update(entity, result -> policyInterface.onSuccess(entity));
             }
         });
     }
@@ -36,10 +45,16 @@ public abstract class newPolicy<T extends DbEntity<T>> {
     public void insert_force(T entity) {
         determineConflict(entity, conflictEntity -> {
             if (conflictEntity == null) {
-                helper.insert(entity, resultEntityID -> policyInterface.onSuccess(resultEntityID));
+                helper.insert(entity, resultEntityID -> {
+                    entity.setId(resultEntityID);
+                    policyInterface.onSuccess(entity);
+                });
             } else {
                 helper.delete(conflictEntity, result ->
-                        helper.insert(entity, resultEntity -> policyInterface.onSuccess(resultEntity)));
+                        helper.insert(entity, resultEntityID -> {
+                            entity.setId(resultEntityID);
+                            policyInterface.onSuccess(entity);
+                        }));
             }
         });
     }

@@ -25,7 +25,7 @@ public class ui_supplier extends UiEntity{
 
     public supplier to_supplier(long supplierID) {
         supplier s = new supplier(name, streetname, housenumber, city, postalcode, phonenumber, emailaddress, website);
-        s.setSupplierID(supplierID);
+        s.setId(supplierID);
         return s;
     }
 }

@@ -12,7 +12,7 @@ public interface productInterface extends DbNamedInterface<product>, DbIDInterfa
     @Query("SELECT * FROM product")
     List<product> getAll();
 
-    @Query("SELECT * FROM product where productID = :id")
+    @Query("SELECT * FROM product where id = :id")
     product findByID(long id);
 
     @Query("SELECT * FROM product where name LIKE :name")

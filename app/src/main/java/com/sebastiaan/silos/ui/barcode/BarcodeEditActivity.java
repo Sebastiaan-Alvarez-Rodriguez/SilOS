@@ -142,7 +142,7 @@ public class BarcodeEditActivity extends AppCompatActivity implements DbPolicyIn
         if (inputMode == NEW) {
             resultStatus = INSERTED;
             barcodeNewPolicy n = new barcodeNewPolicy(this, barcodeHelper);
-            n.insert(input, product.getProductID());
+            n.insert(input, product.getId());
         }
     }
 
@@ -168,9 +168,9 @@ public class BarcodeEditActivity extends AppCompatActivity implements DbPolicyIn
     }
 
     @Override
-    public void onSuccess(long insertedEntityID) {
+    public void onSuccess(barcode entity) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable("result", getBarcode().to_barcode(insertedEntityID));
+        bundle.putParcelable("result", entity);
         Intent intent = new Intent();
         intent.putExtras(bundle);
         setResult(resultStatus, intent);

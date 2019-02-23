@@ -193,11 +193,11 @@ public class ProductEditActivity extends AppCompatActivity implements DbPolicyIn
     }
 
     @Override
-    public void onSuccess(long insertedEntityID) {
+    public void onSuccess(product entity) {
         //TODO: product_supplier relations
-        store_SupplierProducts(supplierAdapter.getSelectedItems(), insertedEntityID, resultIDs -> {
+        store_SupplierProducts(supplierAdapter.getSelectedItems(), entity.getId(), resultIDs -> {
             Bundle bundle = new Bundle();
-            bundle.putParcelable("result", getProduct().to_product(insertedEntityID));
+            bundle.putParcelable("result", entity);
             Intent intent = new Intent();
             intent.putExtras(bundle);
             setResult(resultStatus, intent);

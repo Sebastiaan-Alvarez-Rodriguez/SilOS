@@ -15,7 +15,7 @@ public interface supplierInterface extends DbNamedInterface<supplier>, DbIDInter
     List<supplier> getAll();
 
 
-    @Query("SELECT * FROM supplier where supplierID = :id")
+    @Query("SELECT * FROM supplier where id = :id")
     supplier findByID(long id);
 
     @Query("SELECT * FROM supplier where name = :name")
