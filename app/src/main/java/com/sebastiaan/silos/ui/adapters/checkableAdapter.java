@@ -56,7 +56,7 @@ public abstract class checkableAdapter<T extends baseViewHolder<U>, U> extends b
 
     @Override
     public void onBindViewHolder(@NonNull T viewholder, int position) {
-        U ref = list.get(position);
+        U ref = list.get(position);//TODO: Werkt dit?
         viewholder.set(ref);
     }
 }

@@ -4,11 +4,13 @@ import android.content.Context;
 
 import com.sebastiaan.silos.db.async.DbAsyncInterface;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
-import com.sebastiaan.silos.db.async.task.getAll.supplierGetAllTask;
+import com.sebastiaan.silos.db.async.task.getAll.GetAllTask;
 import com.sebastiaan.silos.db.entities.supplier;
 import com.sebastiaan.silos.ui.entities.ui_supplier;
 
 import java.util.List;
+
+import androidx.lifecycle.LiveData;
 
 public class supplierHelper extends helperNamed<supplier> {
 
@@ -29,8 +31,8 @@ public class supplierHelper extends helperNamed<supplier> {
         deleteAll(suppliers.toArray(new supplier[0]), onFinish);
     }
 
-    public void getAll(DbAsyncInterface<List<supplier>> onFinish) {
-        supplierGetAllTask task = new supplierGetAllTask(manager, context);
+    public void getAll(DbAsyncInterface<LiveData<List<supplier>>> onFinish) {
+        GetAllTask<supplier> task = new GetAllTask<>(manager, context, new supplier("", "", "", "", "", "", "", ""));
         task.setCallback(onFinish).execute();
     }
 }

@@ -160,13 +160,14 @@ public class BarcodeEditActivity extends AppCompatActivity implements DbPolicyIn
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onConflict(barcode entity, barcode conflictEntity) {
         productHelper h = new productHelper(manager, getApplicationContext());
         h.findByID(new product("", ""), conflictEntity.getProductID(), conflictProduct -> {
             AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
             alertBuilder.setTitle("Overwrite");
-            alertBuilder.setMessage("Barcode already assigned to "+conflictProduct.getName()+". Overwrite?");
+            alertBuilder.setMessage("Barcode already assigned to "+conflictProduct.getValue().getName()+". Overwrite?");
             alertBuilder.setPositiveButton("Yes", (dialog, which) -> store_forceBarcode(entity));
             alertBuilder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
             alertBuilder.create().show();

@@ -11,6 +11,8 @@ import com.sebastiaan.silos.db.async.task.insert.insertTask;
 import com.sebastiaan.silos.db.async.task.update.updateTask;
 import com.sebastiaan.silos.db.entities.DbEntity;
 
+import androidx.lifecycle.LiveData;
+
 public abstract class helper<T extends DbEntity<T>> {
     protected AsyncManager manager;
     protected Context context;
@@ -40,7 +42,7 @@ public abstract class helper<T extends DbEntity<T>> {
         task.setCallback(onFinish).execute();
     }
 
-    public void findByID(T objectType, long id, DbAsyncInterface<T> onFinish) {
+    public void findByID(T objectType, long id, DbAsyncInterface<LiveData<T>> onFinish) {
         findByIDTask<T> task = new findByIDTask<>(manager, context, objectType, id);
         task.setCallback(onFinish).execute();
     }

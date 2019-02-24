@@ -9,14 +9,17 @@ import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sebastiaan.silos.R;
+import com.sebastiaan.silos.db.AppDatabase;
 import com.sebastiaan.silos.db.async.helper.supplierHelper;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.entities.supplier;
+import com.sebastiaan.silos.db.interfaces.supplierInterface;
 import com.sebastiaan.silos.ui.adapters.interfaces.actionCallback;
 import com.sebastiaan.silos.ui.adapters.interfaces.clickCallback;
 import com.sebastiaan.silos.ui.adapters.supplier.supplierAdapterAction;
 import com.sebastiaan.silos.ui.requestCodes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -28,9 +31,6 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import static com.sebastiaan.silos.ui.resultCodes.INSERTED;
-import static com.sebastiaan.silos.ui.resultCodes.OVERRIDE;
 
 public class SuppliersActivity extends AppCompatActivity implements ActionMode.Callback, clickCallback<supplier>, actionCallback {
     private AsyncManager manager;
@@ -55,14 +55,16 @@ public class SuppliersActivity extends AppCompatActivity implements ActionMode.C
     }
 
     private void prepareList() {
+        adapter = new supplierAdapterAction(new ArrayList<>(), this, this);
+        adapter.setSelectedColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
+
+        supplierInterface si = AppDatabase.getDatabase(getApplicationContext()).supplierDao();
+        si.getAll().observe(this, adapter.getObserver());
+
         RecyclerView supplierlist = findViewById(R.id.activity_list_list);
-        supplierHelper.getAll(list -> {
-            supplierlist.setLayoutManager(new LinearLayoutManager(this));
-            adapter = new supplierAdapterAction(list, this, this);
-            adapter.setSelectedColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
-            supplierlist.setAdapter(adapter);
-            supplierlist.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-        });
+        supplierlist.setLayoutManager(new LinearLayoutManager(this));
+        supplierlist.setAdapter(adapter);
+        supplierlist.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
     }
 
     private void setupActionBar() {
@@ -91,27 +93,6 @@ public class SuppliersActivity extends AppCompatActivity implements ActionMode.C
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case requestCodes.NEW:
-                switch (resultCode) {
-                    case INSERTED:
-                        if (data != null)
-                            adapter.itemAdded(data.getParcelableExtra("result"));
-                        break;
-                    case OVERRIDE:
-                        if (data != null)
-                            adapter.itemOverriden(data.getParcelableExtra("result"));
-                        break;
-                }
-                break;
-            case requestCodes.EDIT:
-                //TODO: bouw hier iets voor
-        }
     }
 
     private void deleteSelected() {

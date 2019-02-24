@@ -93,9 +93,9 @@ public class ProductEditActivity extends AppCompatActivity implements DbPolicyIn
     private void prepareList(Set<supplier> enabledList) {
         supplierHelper.getAll(result -> {
             if (enabledList != null)
-                supplierAdapter = new supplierAdapterCheckable(result, null, enabledList);
+                supplierAdapter = new supplierAdapterCheckable(result.getValue(), null, enabledList);
             else
-                supplierAdapter = new supplierAdapterCheckable(result, null);
+                supplierAdapter = new supplierAdapterCheckable(result.getValue(), null);
 
             supplierlist.setLayoutManager(new LinearLayoutManager(this));
             supplierlist.setAdapter(supplierAdapter);

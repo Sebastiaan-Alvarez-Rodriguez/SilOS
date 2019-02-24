@@ -28,20 +28,29 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 
+//    androidX appcompatibility
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
     implementation 'androidx.room:room-runtime:2.0.0'
     annotationProcessor 'androidx.room:room-compiler:2.0.0'
 
+//    barcode machine learning deps
     implementation 'com.google.firebase:firebase-core:16.0.6'
     implementation 'com.google.firebase:firebase-ml-vision:19.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
 
+//    Design deps
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
+//    camera deps
     implementation 'com.camerakit:camerakit:1.0.0-beta3.10'
     implementation 'com.camerakit:jpegkit:0.1.0'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0'
+
+//    Livedata deps
+    // LiveData dependency
+    implementation 'android.arch.lifecycle:viewmodel:1.1.1'
+    annotationProcessor 'android.arch.lifecycle:compiler:1.1.1'
 }
 apply plugin: 'com.google.gms.google-services'

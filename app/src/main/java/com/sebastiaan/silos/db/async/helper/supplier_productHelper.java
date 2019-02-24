@@ -17,6 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import androidx.lifecycle.LiveData;
+
 public class supplier_productHelper extends helper<supplier_product> {
 
     public supplier_productHelper(AsyncManager manager, Context context) {
@@ -68,7 +70,7 @@ public class supplier_productHelper extends helper<supplier_product> {
         parallelgroup.execute();
     }
 
-    public void getForProduct(long productID, DbAsyncInterface<List<supplier>> onFinish) {
+    public void getForProduct(long productID, DbAsyncInterface<LiveData<List<supplier>>> onFinish) {
         supplier_productGetSuppliersTask task = new supplier_productGetSuppliersTask(manager, context, productID);
         task.setCallback(onFinish).execute();
     }
