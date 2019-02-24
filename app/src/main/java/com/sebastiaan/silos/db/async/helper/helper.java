@@ -7,9 +7,12 @@ import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.async.task.delete.deleteAllTask;
 import com.sebastiaan.silos.db.async.task.delete.deleteTask;
 import com.sebastiaan.silos.db.async.task.find.findByIDTask;
+import com.sebastiaan.silos.db.async.task.getAll.GetAllTask;
 import com.sebastiaan.silos.db.async.task.insert.insertTask;
 import com.sebastiaan.silos.db.async.task.update.updateTask;
 import com.sebastiaan.silos.db.entities.DbEntity;
+
+import java.util.List;
 
 import androidx.lifecycle.LiveData;
 
@@ -44,6 +47,11 @@ public abstract class helper<T extends DbEntity<T>> {
 
     public void findByID(T objectType, long id, DbAsyncInterface<LiveData<T>> onFinish) {
         findByIDTask<T> task = new findByIDTask<>(manager, context, objectType, id);
+        task.setCallback(onFinish).execute();
+    }
+
+    public void getAll(T objectType, DbAsyncInterface<LiveData<List<T>>> onFinish) {
+        GetAllTask<T> task = new GetAllTask<>(manager, context, objectType);
         task.setCallback(onFinish).execute();
     }
 }

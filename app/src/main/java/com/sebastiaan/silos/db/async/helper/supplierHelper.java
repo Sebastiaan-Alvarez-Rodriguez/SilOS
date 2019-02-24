@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.sebastiaan.silos.db.async.DbAsyncInterface;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
-import com.sebastiaan.silos.db.async.task.getAll.GetAllTask;
 import com.sebastiaan.silos.db.entities.supplier;
 import com.sebastiaan.silos.ui.entities.ui_supplier;
 
@@ -32,7 +31,6 @@ public class supplierHelper extends helperNamed<supplier> {
     }
 
     public void getAll(DbAsyncInterface<LiveData<List<supplier>>> onFinish) {
-        GetAllTask<supplier> task = new GetAllTask<>(manager, context, new supplier("", "", "", "", "", "", "", ""));
-        task.setCallback(onFinish).execute();
+        getAll(new supplier("", "", "", "", "", "", "", ""), onFinish);
     }
 }

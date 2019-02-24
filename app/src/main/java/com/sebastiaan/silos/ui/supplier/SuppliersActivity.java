@@ -9,18 +9,13 @@ import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sebastiaan.silos.R;
-import com.sebastiaan.silos.db.AppDatabase;
-import com.sebastiaan.silos.db.async.helper.supplierHelper;
-import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.entities.supplier;
-import com.sebastiaan.silos.db.interfaces.supplierInterface;
 import com.sebastiaan.silos.ui.adapters.interfaces.actionCallback;
 import com.sebastiaan.silos.ui.adapters.interfaces.clickCallback;
 import com.sebastiaan.silos.ui.adapters.supplier.supplierAdapterAction;
 import com.sebastiaan.silos.ui.requestCodes;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -28,38 +23,33 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class SuppliersActivity extends AppCompatActivity implements ActionMode.Callback, clickCallback<supplier>, actionCallback {
-    private AsyncManager manager;
-    private supplierHelper supplierHelper;
-
+    private SupplierViewModel model;
     private supplierAdapterAction adapter;
     private ActionMode actionMode = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        model = ViewModelProviders.of(this).get(SupplierViewModel.class);
+
         setContentView(R.layout.activity_list);
-        prepareAsync();
         prepareList();
         setupActionBar();
         setFab();
-    }
-
-    private void prepareAsync() {
-         manager = new AsyncManager();
-         supplierHelper = new supplierHelper(manager, getApplicationContext());
     }
 
     private void prepareList() {
         adapter = new supplierAdapterAction(new ArrayList<>(), this, this);
         adapter.setSelectedColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
 
-        supplierInterface si = AppDatabase.getDatabase(getApplicationContext()).supplierDao();
-        si.getAll().observe(this, adapter.getObserver());
+        model.getAll().observe(this, adapter.getObserver());
 
         RecyclerView supplierlist = findViewById(R.id.activity_list_list);
         supplierlist.setLayoutManager(new LinearLayoutManager(this));
@@ -96,8 +86,7 @@ public class SuppliersActivity extends AppCompatActivity implements ActionMode.C
     }
 
     private void deleteSelected() {
-        List<supplier> list = adapter.getSelected();
-        supplierHelper.deleteAll(list, result -> prepareList());
+        model.deleteAll(adapter.getSelected(), result -> prepareList());
     }
 
     @Override
@@ -152,11 +141,5 @@ public class SuppliersActivity extends AppCompatActivity implements ActionMode.C
     public void onEmptyItemSelection() {
         adapter.finishActionMode();
         actionMode.finish();
-    }
-
-    @Override
-    protected void onDestroy() {
-        manager.cancelAllWorking();
-        super.onDestroy();
     }
 }
