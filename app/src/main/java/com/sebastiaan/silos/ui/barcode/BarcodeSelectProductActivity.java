@@ -48,7 +48,7 @@ public class BarcodeSelectProductActivity extends AppCompatActivity implements c
     private void prepareList() {
         RecyclerView productList = findViewById(R.id.activity_list_list);
         productHelper.getAll(result -> {
-            adapter = new productAdapterBase(result, this, supplier_productHelper);
+            adapter = new productAdapterBase(result.getValue(), this, supplier_productHelper);
             productList.setLayoutManager(new LinearLayoutManager(this));
             productList.setAdapter(adapter);
             productList.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));

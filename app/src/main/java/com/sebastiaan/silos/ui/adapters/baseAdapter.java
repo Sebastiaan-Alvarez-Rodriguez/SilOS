@@ -1,5 +1,6 @@
 package com.sebastiaan.silos.ui.adapters;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 public abstract class baseAdapter<T extends baseViewHolder<U>, U> extends RecyclerView.Adapter<T> implements viewHolderClickCallback {
@@ -22,25 +24,11 @@ public abstract class baseAdapter<T extends baseViewHolder<U>, U> extends Recycl
         this.clickCallback = clickCallback;
     }
 
-    public void itemAdded(U item) {
-        list.add(item);
-        notifyItemInserted(list.size()-1);
-    }
-
-    public void itemOverriden(U item) {
-        int found = list.indexOf(item);
-
-        if (found == -1)
-            throw new RuntimeException("overrided entity not found");
-        list.set(found, item);
-
-        notifyItemChanged(found);
-    }
-
     @NonNull
     @Override
     public abstract T onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType);
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onBindViewHolder(@NonNull T viewholder, int position) {
         U ref = list.get(position);
@@ -67,5 +55,13 @@ public abstract class baseAdapter<T extends baseViewHolder<U>, U> extends Recycl
         if (clickCallback != null)
             return clickCallback.onItemLongClick(v, list.get(position));
         return false;
+    }
+
+    public Observer<List<U>> getObserver() {
+        return l -> {
+            Log.d("TESTTTTTT", "Observer geeft aan dat data veranderd is");
+            list = l;
+            notifyDataSetChanged();
+        };
     }
 }

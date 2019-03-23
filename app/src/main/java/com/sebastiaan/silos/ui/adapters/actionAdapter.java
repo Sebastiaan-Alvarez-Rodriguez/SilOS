@@ -25,7 +25,7 @@ public abstract class actionAdapter<T extends baseViewHolder<U>, U> extends base
         this.actionCallback = clickCallback;
     }
 
-    public List<U> getSelected() {
+    public List<U> getSelected() {//TODO: test this
         List<U> returnlist = new ArrayList<>();
         for (int index : selectedItems) {
             returnlist.add(list.get(index));

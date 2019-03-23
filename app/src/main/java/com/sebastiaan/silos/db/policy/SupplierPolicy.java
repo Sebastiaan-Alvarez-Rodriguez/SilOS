@@ -1,17 +1,17 @@
-package com.sebastiaan.silos.db.policy.insert;
+package com.sebastiaan.silos.db.policy;
 
 import com.sebastiaan.silos.db.async.helper.helperNamed;
 import com.sebastiaan.silos.db.async.helper.supplierHelper;
 import com.sebastiaan.silos.db.entities.supplier;
-import com.sebastiaan.silos.db.policy.DbPolicyInterface;
+import com.sebastiaan.silos.db.policy.interfaces.DbPolicyInterface;
 import com.sebastiaan.silos.ui.entities.ui_supplier;
 
 import androidx.annotation.NonNull;
 
-public class supplierNewPolicy extends newNamedPolicy<supplier> {
+public class SupplierPolicy extends NamedPolicy<supplier> {
     protected supplierHelper helper;
 
-    public supplierNewPolicy(@NonNull DbPolicyInterface<supplier> policyInterface, helperNamed<supplier> helper) {
+    public SupplierPolicy(@NonNull DbPolicyInterface<supplier> policyInterface, helperNamed<supplier> helper) {
         super(policyInterface, helper);
     }
 

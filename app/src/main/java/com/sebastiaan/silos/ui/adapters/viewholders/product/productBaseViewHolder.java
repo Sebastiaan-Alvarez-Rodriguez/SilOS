@@ -13,8 +13,6 @@ import com.sebastiaan.silos.ui.adapters.supplier.supplierAdapterBase;
 import com.sebastiaan.silos.ui.adapters.viewholders.baseViewHolder;
 import com.sebastiaan.silos.ui.adapters.viewholders.viewHolderClickCallback;
 
-import java.util.ArrayList;
-
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -66,17 +64,17 @@ public class productBaseViewHolder extends baseViewHolder<product> {
     private void prepareList(View itemView) {
         supplier_productHelper.getForProduct(id, result -> {
             productSupplierView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
-            adapter = new supplierAdapterBase(new ArrayList<>(result), null);
+            adapter = new supplierAdapterBase(result.getValue(), null);
             productSupplierView.setAdapter(adapter);
             productSupplierView.addItemDecoration(new DividerItemDecoration(itemView.getContext(), LinearLayoutManager.VERTICAL));
             suppliersReceived = true;
-            Log.e("TEST", "Ik heb gevonden voor ID="+id+": " + result.size());
+            Log.e("TEST", "Ik heb gevonden voor ID="+id+": " + result.getValue().size());
         });
     }
 
     @Override
     public void set(product product) {
-        id = product.getProductID();
+        id = product.getId();
         productName.setText(product.getName());
         productDescription.setText(product.getProductDescription());
     }

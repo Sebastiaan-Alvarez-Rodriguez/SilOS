@@ -4,11 +4,13 @@ import android.content.Context;
 
 import com.sebastiaan.silos.db.async.DbAsyncInterface;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
-import com.sebastiaan.silos.db.async.task.getAll.productGetAllTask;
+import com.sebastiaan.silos.db.async.task.getAll.GetAllTask;
 import com.sebastiaan.silos.db.entities.product;
 import com.sebastiaan.silos.ui.entities.ui_product;
 
 import java.util.List;
+
+import androidx.lifecycle.LiveData;
 
 public class productHelper extends helperNamed<product> {
 
@@ -22,7 +24,7 @@ public class productHelper extends helperNamed<product> {
 
     public void update(long productID, ui_product product, DbAsyncInterface<Void> onFinish) {
         product p = new product(product.productname, product.description);
-        p.setProductID(productID);
+        p.setId(productID);
         update(p, onFinish);
     }
 
@@ -30,8 +32,8 @@ public class productHelper extends helperNamed<product> {
         deleteAll(products.toArray(new product[0]), onFinish);
     }
 
-    public void getAll(DbAsyncInterface<List<product>> onFinish) {
-        productGetAllTask task = new productGetAllTask(manager, context);
+    public void getAll(DbAsyncInterface<LiveData<List<product>>> onFinish) {
+        GetAllTask<product> task = new GetAllTask<>(manager, context, new product("", ""));
         task.setCallback(onFinish).execute();
     }
 }

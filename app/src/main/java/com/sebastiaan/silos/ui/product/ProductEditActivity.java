@@ -15,8 +15,8 @@ import com.sebastiaan.silos.db.async.helper.supplier_productHelper;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.entities.product;
 import com.sebastiaan.silos.db.entities.supplier;
-import com.sebastiaan.silos.db.policy.DbPolicyInterface;
-import com.sebastiaan.silos.db.policy.insert.productNewPolicy;
+import com.sebastiaan.silos.db.policy.interfaces.DbPolicyInterface;
+import com.sebastiaan.silos.db.policy.ProductPolicy;
 import com.sebastiaan.silos.ui.adapters.supplier.supplierAdapterCheckable;
 import com.sebastiaan.silos.ui.entities.ui_product;
 import com.sebastiaan.silos.ui.inputMode;
@@ -93,9 +93,9 @@ public class ProductEditActivity extends AppCompatActivity implements DbPolicyIn
     private void prepareList(Set<supplier> enabledList) {
         supplierHelper.getAll(result -> {
             if (enabledList != null)
-                supplierAdapter = new supplierAdapterCheckable(result, null, enabledList);
+                supplierAdapter = new supplierAdapterCheckable(result.getValue(), null, enabledList);
             else
-                supplierAdapter = new supplierAdapterCheckable(result, null);
+                supplierAdapter = new supplierAdapterCheckable(result.getValue(), null);
 
             supplierlist.setLayoutManager(new LinearLayoutManager(this));
             supplierlist.setAdapter(supplierAdapter);
@@ -155,29 +155,31 @@ public class ProductEditActivity extends AppCompatActivity implements DbPolicyIn
     }
 
     private void storeProduct(ui_product input) {
+        ProductPolicy n = new ProductPolicy(this, productHelper);
         if (inputMode == NEW) {
             resultStatus = INSERTED;
-            productNewPolicy n = new productNewPolicy(this, productHelper);
             n.insert(input);
-        } else if (inputMode == EDIT && nameChanged()) {
-            //TODO: apply edit flowgraph
+        } else if (inputMode == EDIT) {
+            resultStatus = OVERRIDE;
+            n.update(input.to_product(edit_product.getId()));
         }
     }
 
     private void store_forceProduct(product input) {
+        ProductPolicy n = new ProductPolicy(this, productHelper);
         if (inputMode == NEW) {
             resultStatus = INSERTED;
-            productNewPolicy n = new productNewPolicy(this, productHelper);
             n.insert_force(input);
+        } else if (inputMode == EDIT) {
+            resultStatus = OVERRIDE;
+            n.update_force(input);
         }
     }
 
     private void store_SupplierProducts(Set<supplier> selected, long productID, DbAsyncInterface<long[]> onFinish) {
-        if (inputMode == NEW) {
-            resultStatus = OVERRIDE; //TODO: does this work in UI?
+//        if (inputMode == NEW) {
             supplier_productHelper.insert(productID, selected, onFinish);
-//            activityFinish(INSERTED, input.to_product(productID));
-        }
+//        }
     }
 
     @Override
@@ -193,11 +195,11 @@ public class ProductEditActivity extends AppCompatActivity implements DbPolicyIn
     }
 
     @Override
-    public void onSuccess(long insertedEntityID) {
+    public void onSuccess(product entity) {
         //TODO: product_supplier relations
-        store_SupplierProducts(supplierAdapter.getSelectedItems(), insertedEntityID, resultIDs -> {
+        store_SupplierProducts(supplierAdapter.getSelectedItems(), entity.getId(), resultIDs -> {
             Bundle bundle = new Bundle();
-            bundle.putParcelable("result", getProduct().to_product(insertedEntityID));
+            bundle.putParcelable("result", entity);
             Intent intent = new Intent();
             intent.putExtras(bundle);
             setResult(resultStatus, intent);

@@ -35,13 +35,13 @@ public class supplierAdapterCheckable extends checkableAdapter<supplierCheckable
     @Override
     public void onBindViewHolder(@NonNull supplierCheckableViewHolder viewholder, int position) {
         super.onBindViewHolder(viewholder, position);
-        supplier ref = list.get(position);
+        supplier ref = list.get(position);//TODO: werkt dit?
         boolean checked = containsSelectedItem(ref);
         viewholder.setChecked(checked);
     }
 
     @Override
     public void onCheckedChanged(boolean isChecked, int position) {
-        onCheckedChanged(list.get(position), isChecked);
+        onCheckedChanged(list.get(position), isChecked);//TODO: werkt dit?
     }
 }

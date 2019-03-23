@@ -12,14 +12,11 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
-import androidx.room.PrimaryKey;
 
 import static androidx.room.ForeignKey.CASCADE;
 
 @Entity
 public class barcode extends DbEntity<barcode> implements Parcelable {
-    @PrimaryKey
-    private long barcodeID;
     @NonNull
     private String barcodeString;
     @ForeignKey(entity = product.class, parentColumns = "productID", childColumns = "productID", onDelete = CASCADE)
@@ -34,6 +31,7 @@ public class barcode extends DbEntity<barcode> implements Parcelable {
     }
 
     protected barcode(Parcel in) {
+        id = in.readLong();
         barcodeString = Objects.requireNonNull(in.readString());
         productID = in.readLong();
         amount = in.readInt();
@@ -50,14 +48,6 @@ public class barcode extends DbEntity<barcode> implements Parcelable {
             return new barcode[size];
         }
     };
-
-    public long getBarcodeID() {
-        return barcodeID;
-    }
-
-    public void setBarcodeID(long barcodeID) {
-        this.barcodeID = barcodeID;
-    }
 
     public long getProductID() {
         return productID;
@@ -91,7 +81,9 @@ public class barcode extends DbEntity<barcode> implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
         dest.writeString(barcodeString);
+        dest.writeLong(productID);
         dest.writeInt(amount);
     }
 

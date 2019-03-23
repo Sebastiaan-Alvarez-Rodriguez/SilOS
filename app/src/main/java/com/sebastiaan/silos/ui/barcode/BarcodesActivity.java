@@ -16,7 +16,6 @@ import com.sebastiaan.silos.db.entities.product;
 import com.sebastiaan.silos.ui.adapters.barcode.barcodeAdapterAction;
 import com.sebastiaan.silos.ui.adapters.interfaces.actionCallback;
 import com.sebastiaan.silos.ui.adapters.interfaces.clickCallback;
-import com.sebastiaan.silos.ui.requestCodes;
 
 import java.util.List;
 
@@ -29,9 +28,6 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import static com.sebastiaan.silos.ui.resultCodes.INSERTED;
-import static com.sebastiaan.silos.ui.resultCodes.OVERRIDE;
 
 public class BarcodesActivity extends AppCompatActivity implements ActionMode.Callback, clickCallback<barcode>, actionCallback {
 
@@ -47,6 +43,7 @@ public class BarcodesActivity extends AppCompatActivity implements ActionMode.Ca
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         prepareAsync();
+
         setContentView(R.layout.activity_list);
 
 
@@ -68,9 +65,9 @@ public class BarcodesActivity extends AppCompatActivity implements ActionMode.Ca
 
     private void prepareList() {
         RecyclerView productList = findViewById(R.id.activity_list_list);
-        barcodeHelper.getAll(product.getProductID(), result -> {
+        barcodeHelper.GetBarcodesForProduct(product.getId(), result -> {
             productList.setLayoutManager(new LinearLayoutManager(this));
-            adapter = new barcodeAdapterAction(result, this, this);
+            adapter = new barcodeAdapterAction(result.getValue(), this, this);
             adapter.setSelectedColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
             productList.setAdapter(adapter);
             productList.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
@@ -94,7 +91,7 @@ public class BarcodesActivity extends AppCompatActivity implements ActionMode.Ca
             Bundle bundle = new Bundle();
             bundle.putParcelable("product_parcel", product);
             intent.putExtras(bundle);
-            startActivityForResult(intent, requestCodes.NEW);
+            startActivity(intent);
         });
     }
 
@@ -106,27 +103,6 @@ public class BarcodesActivity extends AppCompatActivity implements ActionMode.Ca
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case requestCodes.NEW:
-                switch (resultCode) {
-                    case INSERTED:
-                        if (data != null)
-                            adapter.itemAdded(data.getParcelableExtra("result"));
-                        break;
-                    case OVERRIDE:
-                        if (data != null)
-                            adapter.itemOverriden(data.getParcelableExtra("result"));
-                        break;
-                }
-                break;
-            case requestCodes.EDIT:
-                //TODO: bouw hier iets voor
-        }
     }
 
     private void deleteSelected() {
@@ -171,7 +147,7 @@ public class BarcodesActivity extends AppCompatActivity implements ActionMode.Ca
             bundle.putParcelable("product_parcel", product);
             bundle.putParcelable("barcode_parcel", b);
             editIntent.putExtras(bundle);
-            startActivityForResult(editIntent, requestCodes.EDIT);
+            startActivity(editIntent);
         }
         return true;
     }

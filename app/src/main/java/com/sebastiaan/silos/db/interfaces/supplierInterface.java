@@ -4,6 +4,7 @@ import com.sebastiaan.silos.db.entities.supplier;
 
 import java.util.List;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -12,11 +13,11 @@ import androidx.room.Query;
 @Dao
 public interface supplierInterface extends DbNamedInterface<supplier>, DbIDInterface<supplier> {
     @Query("SELECT * FROM supplier")
-    List<supplier> getAll();
+    LiveData<List<supplier>> getAll();
 
 
-    @Query("SELECT * FROM supplier where supplierID = :id")
-    supplier findByID(long id);
+    @Query("SELECT * FROM supplier where id = :id")
+    LiveData<supplier> findByID(long id);
 
     @Query("SELECT * FROM supplier where name = :name")
     supplier findByNameExact(String name);

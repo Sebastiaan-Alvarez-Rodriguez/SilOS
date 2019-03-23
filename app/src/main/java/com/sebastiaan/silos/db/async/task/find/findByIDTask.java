@@ -7,7 +7,9 @@ import com.sebastiaan.silos.db.async.task.DbAsyncTask;
 import com.sebastiaan.silos.db.entities.DbEntity;
 import com.sebastiaan.silos.db.interfaces.DbIDInterface;
 
-public class findByIDTask<T extends DbEntity<T>> extends DbAsyncTask<T> {
+import androidx.lifecycle.LiveData;
+
+public class findByIDTask<T extends DbEntity<T>> extends DbAsyncTask<LiveData<T>> {
     protected long id;
     private DbIDInterface<T> DbInterface;
 
@@ -18,7 +20,7 @@ public class findByIDTask<T extends DbEntity<T>> extends DbAsyncTask<T> {
     }
 
     @Override
-    protected T doInBackground(Void... voids) {
+    protected LiveData<T> doInBackground(Void... voids) {
         return DbInterface.findByID(id);
     }
 }

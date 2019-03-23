@@ -1,4 +1,4 @@
-package com.sebastiaan.silos.db.policy;
+package com.sebastiaan.silos.db.policy.interfaces;
 
 import com.sebastiaan.silos.db.entities.DbEntity;
 

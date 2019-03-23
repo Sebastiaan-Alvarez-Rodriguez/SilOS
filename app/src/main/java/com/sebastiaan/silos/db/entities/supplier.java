@@ -10,12 +10,9 @@ import com.sebastiaan.silos.db.interfaces.DbNamedInterface;
 import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.Index;
-import androidx.room.PrimaryKey;
 
 @Entity(indices = {@Index(value = {"name"}, unique = true)})
 public class supplier extends DbEntityNamed<supplier> implements Parcelable {
-    @PrimaryKey(autoGenerate = true)
-    private long supplierID;
     private String streetname, housenumber, city, postalcode, phonenumber, emailaddress, website;
 
     public supplier(String name, String streetname, String housenumber, String city, String postalcode, String phonenumber, String emailaddress, String website) {
@@ -31,7 +28,7 @@ public class supplier extends DbEntityNamed<supplier> implements Parcelable {
 
     protected supplier(Parcel in) {
         super(null);
-        supplierID = in.readLong();
+        id = in.readLong();
         name = in.readString();
         streetname = in.readString();
         housenumber = in.readString();
@@ -53,14 +50,6 @@ public class supplier extends DbEntityNamed<supplier> implements Parcelable {
             return new supplier[size];
         }
     };
-
-    public long getSupplierID() {
-        return supplierID;
-    }
-
-    public void setSupplierID(long supplierID) {
-        this.supplierID = supplierID;
-    }
 
     public String getStreetname() {
         return streetname;
@@ -125,12 +114,12 @@ public class supplier extends DbEntityNamed<supplier> implements Parcelable {
             return false;
         }
         supplier other = (supplier) obj;
-        return this.supplierID == other.supplierID;
+        return this.id == other.id;
     }
 
     @Override
     public int hashCode() {
-        return Long.hashCode(supplierID);
+        return Long.hashCode(id);
     }
 
     @Override
@@ -140,7 +129,7 @@ public class supplier extends DbEntityNamed<supplier> implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(supplierID);
+        dest.writeLong(id);
         dest.writeString(name);
         dest.writeString(streetname);
         dest.writeString(housenumber);
