@@ -9,14 +9,13 @@ import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sebastiaan.silos.R;
-import com.sebastiaan.silos.db.async.helper.supplierHelper;
-import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.entities.supplier;
-import com.sebastiaan.silos.ui.adapters.actionCallback;
+import com.sebastiaan.silos.ui.adapters.interfaces.actionCallback;
+import com.sebastiaan.silos.ui.adapters.interfaces.clickCallback;
 import com.sebastiaan.silos.ui.adapters.supplier.supplierAdapterAction;
 import com.sebastiaan.silos.ui.requestCodes;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -24,44 +23,38 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.sebastiaan.silos.ui.resultCodes.INSERTED;
-import static com.sebastiaan.silos.ui.resultCodes.OVERRIDE;
-
-public class SuppliersActivity extends AppCompatActivity implements ActionMode.Callback, actionCallback<supplier> {
-    private AsyncManager manager;
-    private supplierHelper supplierHelper;
-
+public class SuppliersActivity extends AppCompatActivity implements ActionMode.Callback, clickCallback<supplier>, actionCallback {
+    private SupplierViewModel model;
     private supplierAdapterAction adapter;
     private ActionMode actionMode = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        model = ViewModelProviders.of(this).get(SupplierViewModel.class);
+
         setContentView(R.layout.activity_list);
-        prepareAsync();
         prepareList();
         setupActionBar();
         setFab();
     }
 
-    private void prepareAsync() {
-         manager = new AsyncManager();
-         supplierHelper = new supplierHelper(manager, getApplicationContext());
-    }
-
     private void prepareList() {
+        adapter = new supplierAdapterAction(new ArrayList<>(), this, this);
+        adapter.setSelectedColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
+
+        model.getAll().observe(this, adapter.getObserver());
+
         RecyclerView supplierlist = findViewById(R.id.activity_list_list);
-        supplierHelper.getAll(list -> {
-            supplierlist.setLayoutManager(new LinearLayoutManager(this));
-            adapter = new supplierAdapterAction(list, this);
-            adapter.setSelectedColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
-            supplierlist.setAdapter(adapter);
-            supplierlist.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-        });
+        supplierlist.setLayoutManager(new LinearLayoutManager(this));
+        supplierlist.setAdapter(adapter);
+        supplierlist.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
     }
 
     private void setupActionBar() {
@@ -92,30 +85,8 @@ public class SuppliersActivity extends AppCompatActivity implements ActionMode.C
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case requestCodes.NEW:
-                switch (resultCode) {
-                    case INSERTED:
-                        if (data != null)
-                            adapter.itemAdded(data.getParcelableExtra("result"));
-                        break;
-                    case OVERRIDE:
-                        if (data != null)
-                            adapter.itemOverriden(data.getParcelableExtra("result"));
-                        break;
-                }
-                break;
-            case requestCodes.EDIT:
-                //TODO: bouw hier iets voor
-        }
-    }
-
     private void deleteSelected() {
-        List<supplier> list = adapter.getSelected();
-        supplierHelper.deleteAll(list, result -> prepareList());
+        model.deleteAll(adapter.getSelected(), result -> prepareList());
     }
 
     @Override
@@ -170,11 +141,5 @@ public class SuppliersActivity extends AppCompatActivity implements ActionMode.C
     public void onEmptyItemSelection() {
         adapter.finishActionMode();
         actionMode.finish();
-    }
-
-    @Override
-    protected void onDestroy() {
-        manager.cancelAllWorking();
-        super.onDestroy();
     }
 }

@@ -8,7 +8,9 @@ import com.sebastiaan.silos.db.entities.supplier;
 
 import java.util.List;
 
-public class supplier_productGetSuppliersTask extends DbAsyncTask<List<supplier>> {
+import androidx.lifecycle.LiveData;
+
+public class supplier_productGetSuppliersTask extends DbAsyncTask<LiveData<List<supplier>>> {
     private long productID;
 
     public supplier_productGetSuppliersTask(AsyncManager manager, Context context, long productID) {
@@ -17,7 +19,7 @@ public class supplier_productGetSuppliersTask extends DbAsyncTask<List<supplier>
     }
 
     @Override
-    protected List<supplier> doInBackground(Void... voids) {
+    protected LiveData<List<supplier>> doInBackground(Void... voids) {
         return database.supplier_productDao().findSuppliersForProduct(productID);
     }
 }

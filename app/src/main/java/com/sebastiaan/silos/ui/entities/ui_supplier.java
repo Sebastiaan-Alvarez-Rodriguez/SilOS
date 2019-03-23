@@ -2,7 +2,7 @@ package com.sebastiaan.silos.ui.entities;
 
 import com.sebastiaan.silos.db.entities.supplier;
 
-public class ui_supplier {
+public class ui_supplier extends UiEntity{
     public String name,
     streetname,
     housenumber,
@@ -25,7 +25,7 @@ public class ui_supplier {
 
     public supplier to_supplier(long supplierID) {
         supplier s = new supplier(name, streetname, housenumber, city, postalcode, phonenumber, emailaddress, website);
-        s.setSupplierID(supplierID);
+        s.setId(supplierID);
         return s;
     }
 }

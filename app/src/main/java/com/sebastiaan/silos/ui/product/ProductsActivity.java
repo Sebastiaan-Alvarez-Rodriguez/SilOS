@@ -14,7 +14,8 @@ import com.sebastiaan.silos.db.async.helper.productHelper;
 import com.sebastiaan.silos.db.async.helper.supplier_productHelper;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.entities.product;
-import com.sebastiaan.silos.ui.adapters.actionCallback;
+import com.sebastiaan.silos.ui.adapters.interfaces.actionCallback;
+import com.sebastiaan.silos.ui.adapters.interfaces.clickCallback;
 import com.sebastiaan.silos.ui.adapters.product.productAdapterAction;
 
 import java.util.ArrayList;
@@ -30,10 +31,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.sebastiaan.silos.ui.resultCodes.INSERTED;
-import static com.sebastiaan.silos.ui.resultCodes.OVERRIDE;
-
-public class ProductsActivity extends AppCompatActivity implements ActionMode.Callback, actionCallback<product> {
+public class ProductsActivity extends AppCompatActivity implements ActionMode.Callback, clickCallback<product>, actionCallback {
     private static final int NEW_PRODUCT = 0;
     private static final int EDIT_PRODUCT = 1;
 
@@ -65,7 +63,7 @@ public class ProductsActivity extends AppCompatActivity implements ActionMode.Ca
         RecyclerView productList = findViewById(R.id.activity_list_list);
         productHelper.getAll(result -> {
             productList.setLayoutManager(new LinearLayoutManager(this));
-            adapter = new productAdapterAction(result,this, supplier_productHelper);
+            adapter = new productAdapterAction(result.getValue(),this, this, supplier_productHelper);
             adapter.setSelectedColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
             productList.setAdapter(adapter);
             productList.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
@@ -88,27 +86,6 @@ public class ProductsActivity extends AppCompatActivity implements ActionMode.Ca
             Intent intent = new Intent(this, ProductEditActivity.class);
             startActivityForResult(intent, NEW_PRODUCT);
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case NEW_PRODUCT:
-                switch (resultCode) {
-                    case INSERTED:
-                        if (data != null)
-                            adapter.itemAdded(data.getParcelableExtra("result"));
-                        break;
-                    case OVERRIDE:
-                        if (data != null)
-                            adapter.itemOverriden(data.getParcelableExtra("result"));
-                        break;
-                }
-                break;
-            case EDIT_PRODUCT:
-                //TODO: bouw hier iets voor
-        }
     }
 
     private void deleteSelected() {
@@ -171,9 +148,9 @@ public class ProductsActivity extends AppCompatActivity implements ActionMode.Ca
             Bundle bundle = new Bundle();
             bundle.putParcelable("product_parcel", object);
 
-            supplier_productHelper.getForProduct(object.getProductID(), result -> {
-                Log.e("TEST", "found relations: " + result.size());
-                bundle.putParcelableArrayList("suppliers_parcel", new ArrayList<>(result));
+            supplier_productHelper.getForProduct(object.getId(), result -> {
+                Log.e("TEST", "found relations: " + result.getValue().size());
+                bundle.putParcelableArrayList("suppliers_parcel", new ArrayList<>(result.getValue()));//TODO: werkt dit?
                 editIntent.putExtras(bundle);
                 startActivityForResult(editIntent, EDIT_PRODUCT);
             });

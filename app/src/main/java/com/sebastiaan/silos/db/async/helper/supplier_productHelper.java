@@ -17,6 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import androidx.lifecycle.LiveData;
+
 public class supplier_productHelper extends helper<supplier_product> {
 
     public supplier_productHelper(AsyncManager manager, Context context) {
@@ -27,7 +29,7 @@ public class supplier_productHelper extends helper<supplier_product> {
         Set<supplier_product> relations = new HashSet<>();
 
         for (supplier supplier : suppliers)
-            relations.add(new supplier_product(supplier.getSupplierID(), productID));
+            relations.add(new supplier_product(supplier.getId(), productID));
 
         return relations.toArray(new supplier_product[0]);
     }
@@ -53,12 +55,7 @@ public class supplier_productHelper extends helper<supplier_product> {
     }
 
     public void update(long productID, Set<supplier> suppliersBefore, Set<supplier> suppliersAfter, DbAsyncInterface<Void> async) {
-        Set<supplier> removedRelations = new HashSet<>(), addedRelations = new HashSet<>();
-//        for (supplier s : suppliersAfter) {
-//            //if supplier was not checked but now is, it is added
-//            if (!suppliersBefore.contains(s))
-//                addedRelations.add(s);
-//        } NO NEED SINCE CONFLICTSTRATEGY IS IGNORE, SO EVERYTHING CAN BE ADDED
+        Set<supplier> removedRelations = new HashSet<>();
 
         for (supplier s : suppliersBefore) {
             //if supplier was checked but now is not, it is removed
@@ -73,7 +70,7 @@ public class supplier_productHelper extends helper<supplier_product> {
         parallelgroup.execute();
     }
 
-    public void getForProduct(long productID, DbAsyncInterface<List<supplier>> onFinish) {
+    public void getForProduct(long productID, DbAsyncInterface<LiveData<List<supplier>>> onFinish) {
         supplier_productGetSuppliersTask task = new supplier_productGetSuppliersTask(manager, context, productID);
         task.setCallback(onFinish).execute();
     }

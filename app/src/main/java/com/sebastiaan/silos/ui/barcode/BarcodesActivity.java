@@ -12,9 +12,10 @@ import com.sebastiaan.silos.R;
 import com.sebastiaan.silos.db.async.helper.barcodeHelper;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.entities.barcode;
-import com.sebastiaan.silos.ui.adapters.actionCallback;
+import com.sebastiaan.silos.db.entities.product;
 import com.sebastiaan.silos.ui.adapters.barcode.barcodeAdapterAction;
-import com.sebastiaan.silos.ui.requestCodes;
+import com.sebastiaan.silos.ui.adapters.interfaces.actionCallback;
+import com.sebastiaan.silos.ui.adapters.interfaces.clickCallback;
 
 import java.util.List;
 
@@ -28,12 +29,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.sebastiaan.silos.ui.resultCodes.INSERTED;
-import static com.sebastiaan.silos.ui.resultCodes.OVERRIDE;
+public class BarcodesActivity extends AppCompatActivity implements ActionMode.Callback, clickCallback<barcode>, actionCallback {
 
-public class BarcodesActivity extends AppCompatActivity implements ActionMode.Callback, actionCallback<barcode> {
-
-    private long productID;
+    private product product;
 
     private AsyncManager manager;
     private barcodeHelper barcodeHelper;
@@ -45,14 +43,15 @@ public class BarcodesActivity extends AppCompatActivity implements ActionMode.Ca
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         prepareAsync();
+
         setContentView(R.layout.activity_list);
 
 
         Bundle intent = getIntent().getExtras();
-        if (intent == null)
-            finish();
+        if (intent == null || !intent.containsKey("product_parcel"))
+            throw new RuntimeException("No product selected");
         else {
-            productID = intent.getLong("productID");
+            product = intent.getParcelable("product_parcel");
             prepareList();
             setupActionBar();
             setFab();
@@ -66,9 +65,9 @@ public class BarcodesActivity extends AppCompatActivity implements ActionMode.Ca
 
     private void prepareList() {
         RecyclerView productList = findViewById(R.id.activity_list_list);
-        barcodeHelper.getAll(productID, result -> {
+        barcodeHelper.GetBarcodesForProduct(product.getId(), result -> {
             productList.setLayoutManager(new LinearLayoutManager(this));
-            adapter = new barcodeAdapterAction(result,this);
+            adapter = new barcodeAdapterAction(result.getValue(), this, this);
             adapter.setSelectedColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
             productList.setAdapter(adapter);
             productList.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
@@ -81,17 +80,21 @@ public class BarcodesActivity extends AppCompatActivity implements ActionMode.Ca
         ActionBar actionbar = getSupportActionBar();
         if (actionbar != null) {
             actionbar.setDisplayHomeAsUpEnabled(true);
-            actionbar.setTitle("Barcodes"); //TODO: use string resource
+            actionbar.setTitle("Barcodes for " + product.getName()); //TODO: use string resource
         }
     }
 
     private void setFab() {
         FloatingActionButton addFab = findViewById(R.id.activity_list_addBtn);
-        addFab.setOnClickListener(v-> {
+        addFab.setOnClickListener(v -> {
             Intent intent = new Intent(this, BarcodeEditActivity.class);
-            startActivityForResult(intent, requestCodes.NEW);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("product_parcel", product);
+            intent.putExtras(bundle);
+            startActivity(intent);
         });
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -100,27 +103,6 @@ public class BarcodesActivity extends AppCompatActivity implements ActionMode.Ca
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case requestCodes.NEW:
-                switch (resultCode) {
-                    case INSERTED:
-                        if (data != null)
-                            adapter.itemAdded(data.getParcelableExtra("result"));
-                        break;
-                    case OVERRIDE:
-                        if (data != null)
-                            adapter.itemOverriden(data.getParcelableExtra("result"));
-                        break;
-                }
-                break;
-            case requestCodes.EDIT:
-                //TODO: bouw hier iets voor
-        }
     }
 
     private void deleteSelected() {
@@ -162,9 +144,10 @@ public class BarcodesActivity extends AppCompatActivity implements ActionMode.Ca
         if (actionMode == null) {
             Intent editIntent = new Intent(this, BarcodeEditActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putParcelable("supplier_parcel", b);
+            bundle.putParcelable("product_parcel", product);
+            bundle.putParcelable("barcode_parcel", b);
             editIntent.putExtras(bundle);
-            startActivityForResult(editIntent, requestCodes.EDIT);
+            startActivity(editIntent);
         }
         return true;
     }

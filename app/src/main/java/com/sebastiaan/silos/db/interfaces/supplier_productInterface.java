@@ -5,18 +5,25 @@ import com.sebastiaan.silos.db.entities.supplier_product;
 
 import java.util.List;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 @Dao
-public interface supplier_productInterface extends DbInterface<supplier_product> {
-    @Query("SELECT supplier.* FROM supplier_product, supplier WHERE supplier_product.supplierID = supplier.supplierID AND supplier_product.productID = :productID")
-    List<supplier> findSuppliersForProduct(long productID);
+public interface supplier_productInterface extends DbIDInterface<supplier_product> {
+    @Query("SELECT * FROM supplier_product")
+    LiveData<List<supplier_product>> getAll();
+
+    @Query("SELECT supplier.* FROM supplier_product, supplier WHERE supplier_product.supplierID = supplier.id AND supplier_product.productID = :productID")
+    LiveData<List<supplier>> findSuppliersForProduct(long productID);
+
+    @Query("SELECT * FROM supplier_product WHERE supplierID=:id")
+    LiveData<supplier_product> findByID(long id);
 
     @Query("SELECT COUNT(*) FROM supplier_product WHERE supplierID = :supplierID AND productID = :productID")
-    boolean contains(int supplierID, int productID);
+    boolean contains(long supplierID, long productID);
 
     @Query("SELECT COUNT(*) FROM supplier_product")
     int count();
@@ -28,5 +35,4 @@ public interface supplier_productInterface extends DbInterface<supplier_product>
     long[] insertAll(supplier_product... supplier_products);
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insert(supplier_product supplier_product);
-
 }

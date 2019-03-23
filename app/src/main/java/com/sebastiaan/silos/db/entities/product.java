@@ -5,27 +5,25 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.sebastiaan.silos.db.AppDatabase;
-import com.sebastiaan.silos.db.interfaces.DbInterface;
+import com.sebastiaan.silos.db.interfaces.DbNamedInterface;
 
 import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.Index;
-import androidx.room.PrimaryKey;
 
-@Entity(indices = {@Index(value = {"productName"}, unique = true)})
-public class product extends DbEntity<product> implements Parcelable {
-    @PrimaryKey(autoGenerate = true)
-    private long productID;
-    private String productName, productDescription;
+@Entity(indices = {@Index(value = {"name"}, unique = true)})
+public class product extends DbEntityNamed<product> implements Parcelable {
+    private String productDescription;
 
-    public product(String productName, String productDescription) {
-        this.productName = productName;
+    public product(String name, String productDescription) {
+        super(name);
         this.productDescription = productDescription;
     }
 
     protected product(Parcel in) {
-        productID = in.readLong();
-        productName = in.readString();
+        super(null);
+        id = in.readLong();
+        name = in.readString();
         productDescription = in.readString();
     }
 
@@ -41,22 +39,6 @@ public class product extends DbEntity<product> implements Parcelable {
         }
     };
 
-    public long getProductID() {
-        return productID;
-    }
-
-    public void setProductID(long productID) {
-        this.productID = productID;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
     public String getProductDescription() {
         return productDescription;
     }
@@ -71,7 +53,7 @@ public class product extends DbEntity<product> implements Parcelable {
             return false;
         }
         product other = (product) obj;
-        return this.productID == other.productID;
+        return this.id == other.id;
     }
 
     @Override
@@ -81,13 +63,13 @@ public class product extends DbEntity<product> implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(productID);
-        dest.writeString(productName);
+        dest.writeLong(id);
+        dest.writeString(name);
         dest.writeString(productDescription);
     }
 
     @Override
-    public DbInterface<product> getInterface(Context context) {
+    public DbNamedInterface<product> getInterface(Context context) {
         return AppDatabase.getDatabase(context).productDao();
     }
 }

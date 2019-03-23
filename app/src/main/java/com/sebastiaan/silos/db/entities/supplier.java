@@ -5,23 +5,18 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.sebastiaan.silos.db.AppDatabase;
-import com.sebastiaan.silos.db.interfaces.DbInterface;
+import com.sebastiaan.silos.db.interfaces.DbNamedInterface;
 
 import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.Index;
-import androidx.room.PrimaryKey;
-
-import java.io.Serializable;
 
 @Entity(indices = {@Index(value = {"name"}, unique = true)})
-public class supplier extends DbEntity<supplier> implements Parcelable {
-    @PrimaryKey(autoGenerate = true)
-    private long supplierID;
-    private String name, streetname, housenumber, city, postalcode, phonenumber, emailaddress, website;
+public class supplier extends DbEntityNamed<supplier> implements Parcelable {
+    private String streetname, housenumber, city, postalcode, phonenumber, emailaddress, website;
 
     public supplier(String name, String streetname, String housenumber, String city, String postalcode, String phonenumber, String emailaddress, String website) {
-        this.name = name;
+        super(name);
         this.streetname = streetname;
         this.housenumber = housenumber;
         this.city = city;
@@ -32,7 +27,8 @@ public class supplier extends DbEntity<supplier> implements Parcelable {
     }
 
     protected supplier(Parcel in) {
-        supplierID = in.readLong();
+        super(null);
+        id = in.readLong();
         name = in.readString();
         streetname = in.readString();
         housenumber = in.readString();
@@ -54,22 +50,6 @@ public class supplier extends DbEntity<supplier> implements Parcelable {
             return new supplier[size];
         }
     };
-
-    public long getSupplierID() {
-        return supplierID;
-    }
-
-    public void setSupplierID(long supplierID) {
-        this.supplierID = supplierID;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getStreetname() {
         return streetname;
@@ -134,12 +114,12 @@ public class supplier extends DbEntity<supplier> implements Parcelable {
             return false;
         }
         supplier other = (supplier) obj;
-        return this.supplierID == other.supplierID;
+        return this.id == other.id;
     }
 
     @Override
     public int hashCode() {
-        return Long.hashCode(supplierID);
+        return Long.hashCode(id);
     }
 
     @Override
@@ -149,7 +129,7 @@ public class supplier extends DbEntity<supplier> implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(supplierID);
+        dest.writeLong(id);
         dest.writeString(name);
         dest.writeString(streetname);
         dest.writeString(housenumber);
@@ -161,7 +141,7 @@ public class supplier extends DbEntity<supplier> implements Parcelable {
     }
 
     @Override
-    public DbInterface<supplier> getInterface(Context context) {
+    public DbNamedInterface<supplier> getInterface(Context context) {
         return AppDatabase.getDatabase(context).supplierDao();
     }
 }

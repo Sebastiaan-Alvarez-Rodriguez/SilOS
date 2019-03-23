@@ -11,8 +11,7 @@ import com.sebastiaan.silos.db.async.helper.supplier_productHelper;
 import com.sebastiaan.silos.db.entities.product;
 import com.sebastiaan.silos.ui.adapters.supplier.supplierAdapterBase;
 import com.sebastiaan.silos.ui.adapters.viewholders.baseViewHolder;
-
-import java.util.ArrayList;
+import com.sebastiaan.silos.ui.adapters.viewholders.viewHolderClickCallback;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
@@ -33,7 +32,7 @@ public class productBaseViewHolder extends baseViewHolder<product> {
     private supplierAdapterBase adapter;
     private boolean suppliersReceived;
 
-    public productBaseViewHolder(@NonNull View itemView, supplier_productHelper supplier_productHelper) {
+    public productBaseViewHolder(@NonNull View itemView, supplier_productHelper supplier_productHelper, viewHolderClickCallback clickCallback) {
         super(itemView);
         this.supplier_productHelper = supplier_productHelper;
         suppliersReceived = false;
@@ -57,23 +56,26 @@ public class productBaseViewHolder extends baseViewHolder<product> {
                 detailView.setVisibility(View.GONE);
             }
         });
+
+        itemView.setOnLongClickListener(v -> clickCallback.onClick(v, true, getAdapterPosition()));
+        itemView.setOnClickListener(v -> clickCallback.onClick(v, false, getAdapterPosition()));
     }
 
     private void prepareList(View itemView) {
         supplier_productHelper.getForProduct(id, result -> {
             productSupplierView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
-            adapter = new supplierAdapterBase(new ArrayList<>(result));
+            adapter = new supplierAdapterBase(result.getValue(), null);
             productSupplierView.setAdapter(adapter);
             productSupplierView.addItemDecoration(new DividerItemDecoration(itemView.getContext(), LinearLayoutManager.VERTICAL));
             suppliersReceived = true;
-            Log.e("TEST", "Ik heb gevonden voor ID="+id+": " + result.size());
+            Log.e("TEST", "Ik heb gevonden voor ID="+id+": " + result.getValue().size());
         });
     }
 
     @Override
     public void set(product product) {
-        id = product.getProductID();
-        productName.setText(product.getProductName());
+        id = product.getId();
+        productName.setText(product.getName());
         productDescription.setText(product.getProductDescription());
     }
 

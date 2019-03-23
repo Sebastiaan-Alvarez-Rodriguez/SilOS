@@ -1,9 +1,8 @@
-package com.sebastiaan.silos.ui.adapters;
+package com.sebastiaan.silos.ui.adapters.interfaces;
 
 import android.view.View;
 
-public interface actionCallback<T> {
+public interface clickCallback<T> {
     boolean onItemClick(View v, T object);
     boolean onItemLongClick(View v, T object);
-    void onEmptyItemSelection();
 }
