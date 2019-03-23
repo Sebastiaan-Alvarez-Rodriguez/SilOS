@@ -5,7 +5,7 @@ import android.content.Context;
 import com.sebastiaan.silos.db.async.DbAsyncInterface;
 import com.sebastiaan.silos.db.async.task.AsyncManager;
 import com.sebastiaan.silos.db.async.task.find.findByBarcodeTask;
-import com.sebastiaan.silos.db.async.task.getAll.GetAllTask;
+import com.sebastiaan.silos.db.async.task.getAll.getAllTask;
 import com.sebastiaan.silos.db.async.task.other.barcodesForProductTask;
 import com.sebastiaan.silos.db.entities.barcode;
 import com.sebastiaan.silos.ui.entities.ui_barcode;
@@ -28,7 +28,7 @@ public class barcodeHelper extends helper<barcode> {
     }
 
     public void getAll(DbAsyncInterface<LiveData<List<barcode>>> onFinish) {
-        GetAllTask<barcode> task = new GetAllTask<>(manager, context, new barcode("", 0, 0));
+        getAllTask<barcode> task = new getAllTask<>(manager, context, new barcode("", 0, 0));
         task.setCallback(onFinish).execute();
     }
 

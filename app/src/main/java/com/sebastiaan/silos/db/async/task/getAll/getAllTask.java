@@ -11,10 +11,10 @@ import java.util.List;
 
 import androidx.lifecycle.LiveData;
 
-public class GetAllTask<T extends DbEntity<T>> extends DbAsyncTask<LiveData<List<T>>> {
+public class getAllTask<T extends DbEntity<T>> extends DbAsyncTask<LiveData<List<T>>> {
     private DbIDInterface<T> DbInterface;
 
-    public GetAllTask(AsyncManager manager, Context context, T object) {
+    public getAllTask(AsyncManager manager, Context context, T object) {
         super(manager, context);
         DbInterface = object.getInterface(context);
     }
