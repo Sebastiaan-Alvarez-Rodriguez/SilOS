@@ -68,7 +68,7 @@ public class storage extends DbEntity<storage> implements Parcelable {
 
     @Override
     public DbIDInterface<storage> getInterface(Context context) {
-        return AppDatabase.getDatabase(context).inventoryDao();
+        return AppDatabase.getDatabase(context).storageDao();
     }
 
 }

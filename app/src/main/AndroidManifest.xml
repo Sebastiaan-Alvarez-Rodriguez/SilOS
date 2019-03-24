@@ -25,6 +25,8 @@
         <activity android:name=".ui.barcode.BarcodeSelectProductActivity" />
         <activity android:name=".ui.barcode.BarcodeEditActivity" />
         <activity android:name=".ui.barcode.BarcodesActivity" />
+        <activity android:name=".ui.storage.StorageEditActivity" />
+        <activity android:name=".ui.storage.StorageActivity" />
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"

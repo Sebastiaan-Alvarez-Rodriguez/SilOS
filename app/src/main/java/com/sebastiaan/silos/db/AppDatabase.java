@@ -31,7 +31,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract supplierInterface supplierDao();
     public abstract supplier_productInterface supplier_productDao();
     public abstract barcodeInterface barcodeDao();
-    public abstract storageInterface inventoryDao();
+    public abstract storageInterface storageDao();
 
 //    public <T extends DbEntity<T>> DbInterface<T> getInterface() {
 //

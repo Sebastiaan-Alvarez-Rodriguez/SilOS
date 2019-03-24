@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
+import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.sebastiaan.silos.R;
 import com.sebastiaan.silos.ui.barcode.BarcodeSelectProductActivity;
 import com.sebastiaan.silos.ui.product.ProductsActivity;
+import com.sebastiaan.silos.ui.storage.StorageEditActivity;
 import com.sebastiaan.silos.ui.supplier.SuppliersActivity;
 
 //https://proandroiddev.com/enter-animation-using-recyclerview-and-layoutanimation-part-1-list-75a874a5d213
@@ -18,10 +20,20 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button new_order = findViewById(R.id.main_new_order_btn);//TODO: implement ordering and send user there
+        Button new_order = findViewById(R.id.main_new_order_btn); //TODO;
 
-        Button storage_in = findViewById(R.id.main_storage_in_btn);//TODO: implement storage holdings and send user there
-        Button storage_out = findViewById(R.id.main_storage_out_btn);//TODO: implement storage holdings and send user there
+        new_order.setOnClickListener(v -> {
+            Intent intent = new Intent(this, StorageEditActivity.class);
+            intent.putExtra("IN", true);
+            startActivity(intent);
+        });
+
+        Button storage_out = findViewById(R.id.main_storage_out_btn);
+        storage_out.setOnClickListener(v -> {
+            Intent intent = new Intent(this, StorageEditActivity.class);
+            intent.putExtra("IN", false);
+            startActivity(intent);
+        });
 
         Button supplierButton = findViewById(R.id.main_suppliers_btn);
         supplierButton.setOnClickListener(v -> {
