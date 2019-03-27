@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
-import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.sebastiaan.silos.R;
 import com.sebastiaan.silos.ui.barcode.BarcodeSelectProductActivity;
 import com.sebastiaan.silos.ui.product.ProductsActivity;
+import com.sebastiaan.silos.ui.storage.StorageActivity;
 import com.sebastiaan.silos.ui.storage.StorageEditActivity;
 import com.sebastiaan.silos.ui.supplier.SuppliersActivity;
 
@@ -22,7 +22,14 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         Button new_order = findViewById(R.id.main_new_order_btn); //TODO;
 
-        new_order.setOnClickListener(v -> {
+        Button storage = findViewById(R.id.main_storage_btn);
+        storage.setOnClickListener(v -> {
+            Intent intent = new Intent(this, StorageActivity.class);
+            startActivity(intent);
+        });
+
+        Button storage_in = findViewById(R.id.main_storage_in_btn);
+        storage_in.setOnClickListener(v -> {
             Intent intent = new Intent(this, StorageEditActivity.class);
             intent.putExtra("IN", true);
             startActivity(intent);
