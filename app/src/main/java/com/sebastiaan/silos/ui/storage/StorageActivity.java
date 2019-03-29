@@ -38,7 +38,6 @@ public class StorageActivity extends AppCompatActivity implements clickCallback<
             prepareList();
             setupActionBar();
             setFab();
-            setAmount();
         }
 
         private void prepareList() {
@@ -68,23 +67,6 @@ public class StorageActivity extends AppCompatActivity implements clickCallback<
                 Intent intent = new Intent(this, StorageEditActivity.class);
                 intent.putExtra("IN", true);
                 startActivityForResult(intent, requestCodes.NEW);
-            });
-        }
-
-        private void setAmount() {
-            EditText amount = findViewById(R.id.storage_number);
-            FloatingActionButton sub = findViewById(R.id.storage_sub_btn);
-            sub.setOnClickListener(v-> {
-                int amount_nr = Integer.parseInt(amount.getText().toString());
-                if ( amount_nr > 0) {
-                    amount.setText(String.valueOf(--amount_nr));
-                }
-            });
-
-            FloatingActionButton add = findViewById(R.id.storage_add_btn);
-            add.setOnClickListener(v-> {
-                int amount_nr = Integer.parseInt(amount.getText().toString());
-                amount.setText(String.valueOf(++amount_nr));
             });
         }
 

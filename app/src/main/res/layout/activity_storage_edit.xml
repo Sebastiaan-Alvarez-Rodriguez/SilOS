@@ -8,18 +8,16 @@
 
     <EditText
         android:id="@+id/storage_new_nmr"
-        android:layout_width="84dp"
+        android:layout_width="100dp"
         android:layout_height="54dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="60dp"
         android:layout_marginEnd="8dp"
         android:autofillHints="0"
         android:ems="10"
         android:inputType="number"
-        app:layout_constraintEnd_toStartOf="@+id/storage_ok"
-        app:layout_constraintHorizontal_bias="0.159"
-        app:layout_constraintStart_toEndOf="@+id/storage_current_nmr"
-        app:layout_constraintTop_toBottomOf="@+id/storage_add_btn" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/storage_current_nmr" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/storage_edit_toolbar"
@@ -33,33 +31,35 @@
         android:id="@+id/storage_scan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="88dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
         android:text="Scan"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.33"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/storage_edit_toolbar" />
 
     <Button
         android:id="@+id/storage_select"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="88dp"
         android:layout_marginEnd="8dp"
         android:text="Select"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.664"
-        app:layout_constraintStart_toEndOf="@+id/storage_scan"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/storage_scan" />
 
     <TextView
         android:id="@+id/storage_text"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="36dp"
         android:layout_marginEnd="8dp"
         android:text="Scan or Select a Product"
+        android:textAlignment="center"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -71,7 +71,7 @@
         android:layout_width="150dp"
         android:layout_height="128dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:inputType="number"
@@ -83,81 +83,82 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/storage_text" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <Button
         android:id="@+id/storage_add_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="88dp"
+        android:layout_marginStart="8dp"
         android:clickable="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/storage_number"
-        app:srcCompat="@android:drawable/arrow_up_float"
+        android:text="+"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/storage_number"
+        app:layout_constraintStart_toEndOf="@+id/storage_number"
+        app:layout_constraintTop_toTopOf="@+id/storage_sub_btn"
         tools:scaleType="centerInside" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <Button
         android:id="@+id/storage_sub_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:clickable="true"
-        app:layout_constraintEnd_toStartOf="@+id/storage_add_btn"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="-"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/storage_current_txt"
+        app:layout_constraintEnd_toStartOf="@+id/storage_number"
+        app:layout_constraintStart_toStartOf="@+id/storage_number"
         app:layout_constraintTop_toBottomOf="@+id/storage_number"
-        app:srcCompat="@android:drawable/arrow_down_float" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/storage_ok"
         android:layout_width="54dp"
         android:layout_height="53dp"
-        android:layout_marginTop="124dp"
-        android:layout_marginEnd="52dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
         android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/storage_add_btn"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/storage_new_nmr"
         app:srcCompat="@android:drawable/ic_menu_send" />
 
     <EditText
         android:id="@+id/storage_current_nmr"
-        android:layout_width="84dp"
+        android:layout_width="100dp"
         android:layout_height="54dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:autofillHints="0"
         android:ems="10"
         android:inputType="number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.08"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/storage_sub_btn" />
+        app:layout_constraintTop_toTopOf="@+id/storage_ok" />
 
     <TextView
         android:id="@+id/storage_current_txt"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginBottom="24dp"
         android:text="Current Value"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/storage_current_nmr" />
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/storage_current_nmr"
+        app:layout_constraintEnd_toEndOf="@+id/storage_current_nmr"
+        app:layout_constraintStart_toStartOf="@+id/storage_current_nmr" />
 
     <TextView
         android:id="@+id/storage_new_txt"
-        android:layout_width="wrap_content"
-        android:layout_height="16dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="32dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
         android:text="New Value"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.098"
-        app:layout_constraintStart_toEndOf="@+id/storage_current_txt"
-        app:layout_constraintTop_toBottomOf="@+id/storage_new_nmr"
-        app:layout_constraintVertical_bias="0.187" />
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/storage_new_nmr"
+        app:layout_constraintEnd_toEndOf="@+id/storage_new_nmr"
+        app:layout_constraintStart_toStartOf="@+id/storage_new_nmr" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,6 +3,8 @@ package com.sebastiaan.silos.ui.storage;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.sebastiaan.silos.R;
 
@@ -24,6 +26,7 @@ public class StorageEditActivity extends AppCompatActivity  {
         in = intent.getBooleanExtra("IN", false);
 
         setupActionBar();
+        setupIncrDecr();
     }
 
     private void setupActionBar() {
@@ -37,6 +40,22 @@ public class StorageEditActivity extends AppCompatActivity  {
         }
     }
 
+    private void setupIncrDecr() {
+        EditText amount = findViewById(R.id.storage_number);
+        Button sub = findViewById(R.id.storage_sub_btn);
+        sub.setOnClickListener(v-> {
+            int amount_nr = Integer.parseInt(amount.getText().toString());
+            if ( amount_nr > 0) {
+                amount.setText(String.valueOf(--amount_nr));
+            }
+        });
+
+        Button add = findViewById(R.id.storage_add_btn);
+        add.setOnClickListener(v-> {
+            int amount_nr = Integer.parseInt(amount.getText().toString());
+            amount.setText(String.valueOf(++amount_nr));
+        });
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
