@@ -11,8 +11,10 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.sebastiaan.silos.ui.adapters.interfaces.clickCallback;
+
 public class storageAdapterBase extends baseAdapter<storageBaseViewHolder, storage> {
-    public storageAdapterBase(List list, @Nullable com.sebastiaan.silos.ui.adapters.interfaces.clickCallback clickCallback) {
+    public storageAdapterBase(List<storage> list, @Nullable clickCallback<storage> clickCallback) {
         super(list, clickCallback);
     }
 
